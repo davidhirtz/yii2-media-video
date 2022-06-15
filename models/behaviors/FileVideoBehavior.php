@@ -5,7 +5,6 @@ namespace davidhirtz\yii2\media\video\models\behaviors;
 use davidhirtz\yii2\media\models\File;
 use Exception;
 use getID3;
-use Yii;
 use yii\base\Behavior;
 use yii\validators\FileValidator;
 
@@ -14,6 +13,11 @@ use yii\validators\FileValidator;
  */
 class FileVideoBehavior extends Behavior
 {
+    /**
+     * @var string[]
+     */
+    public $allowedVideoExtensions = ['mp4', 'webm'];
+
     /**
      * @return string[]
      */
@@ -30,9 +34,16 @@ class FileVideoBehavior extends Behavior
      */
     public function onCreateValidators()
     {
-        if (!in_array('mp4', $this->owner->allowedExtensions)) {
-            $this->owner->allowedExtensions[] = 'mp4';
+        $updateFileValidators = false;
 
+        foreach ($this->allowedVideoExtensions as $extension) {
+            if (!in_array($extension, $this->owner->allowedExtensions)) {
+                $this->owner->allowedExtensions[] = $extension;
+                $updateFileValidators = true;
+            }
+        }
+
+        if ($updateFileValidators) {
             foreach ($this->owner->getValidators() as $validator) {
                 if ($validator instanceof FileValidator) {
                     $validator->extensions = $this->owner->allowedExtensions;
@@ -65,6 +76,6 @@ class FileVideoBehavior extends Behavior
      */
     public function isVideo(): bool
     {
-        return $this->owner->extension == 'mp4';
+        return in_array($this->owner->extension, $this->allowedVideoExtensions);
     }
 }
