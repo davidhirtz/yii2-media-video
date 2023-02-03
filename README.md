@@ -16,4 +16,4 @@ SETUP
 -------------
 
 Use `davidhirtz\yii2\media\video\widgets\forms\FileVideoPreviewTrait` to display a video preview
-in `davidhirtz\yii2\media\modules\admin\widgets\grid\FileActiveForm` or any related asset form.
+in `davidhirtz\yii2\media\modules\admin\widgets\forms\FileActiveForm` or any related asset form.
