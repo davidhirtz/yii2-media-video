@@ -8,13 +8,11 @@ use yii\helpers\Html;
 
 /**
  * @property File|AssetInterface $model
+ * @noinspection PhpUnused
  */
 trait FileVideoPreviewTrait
 {
-    /**
-     * @return string
-     */
-    public function previewField()
+    public function previewField(): string
     {
         $file = $this->model instanceof File ? $this->model : $this->model->file;
 

@@ -16,7 +16,7 @@ class Bootstrap implements BootstrapInterface
     /**
      * @param Application $app
      */
-    public function bootstrap($app)
+    public function bootstrap($app): void
     {
         Event::on(File::class, File::EVENT_INIT, function (Event $event) {
             /** @var File $file */

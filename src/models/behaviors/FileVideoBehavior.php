@@ -13,26 +13,20 @@ use yii\validators\FileValidator;
  */
 class FileVideoBehavior extends Behavior
 {
-    /**
-     * @var string[]
-     */
-    public $allowedVideoExtensions = ['mp4', 'webm'];
+    public array $allowedVideoExtensions = ['mp4', 'webm'];
 
-    /**
-     * @return string[]
-     */
     public function events(): array
     {
         return [
-            File::EVENT_CREATE_VALIDATORS => 'onCreateValidators',
-            File::EVENT_BEFORE_VALIDATE => 'onBeforeValidate',
+            File::EVENT_CREATE_VALIDATORS => $this->onCreateValidators(...),
+            File::EVENT_BEFORE_VALIDATE => $this->onBeforeValidate(...),
         ];
     }
 
     /**
      * Makes sure MP4 is added to the allowed extensions.
      */
-    public function onCreateValidators()
+    public function onCreateValidators(): void
     {
         $updateFileValidators = false;
 
@@ -55,9 +49,8 @@ class FileVideoBehavior extends Behavior
 
     /**
      * Sets `width` and `height` from video resolution.
-     * @noinspection PhpUndefinedMethodInspection
      */
-    public function onBeforeValidate()
+    public function onBeforeValidate(): void
     {
         if ($this->owner->upload && $this->owner->isVideo()) {
             try {
@@ -72,7 +65,7 @@ class FileVideoBehavior extends Behavior
     }
 
     /**
-     * @return bool
+     * @noinspection PhpUnused
      */
     public function isVideo(): bool
     {
