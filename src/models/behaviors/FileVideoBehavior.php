@@ -13,7 +13,7 @@ use yii\validators\FileValidator;
  */
 class FileVideoBehavior extends Behavior
 {
-    public array $allowedVideoExtensions = ['mp4', 'webm'];
+    public array $allowedVideoExtensions = ['mp4', 'ogg', 'webm'];
 
     public function events(): array
     {
@@ -46,7 +46,6 @@ class FileVideoBehavior extends Behavior
 
     public function onBeforeValidate(): void
     {
-        /** @noinspection PhpUndefinedMethodInspection {@uses self::isVideo()} */
         if ($this->owner->upload && $this->owner->isVideo()) {
             try {
                 $getID3 = new getID3();
@@ -57,10 +56,5 @@ class FileVideoBehavior extends Behavior
                 $this->owner->addError('upload', $exception->getMessage());
             }
         }
-    }
-
-    public function isVideo(): bool
-    {
-        return in_array($this->owner->extension, $this->allowedVideoExtensions);
     }
 }
