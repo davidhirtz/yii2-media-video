@@ -23,9 +23,6 @@ class FileVideoBehavior extends Behavior
         ];
     }
 
-    /**
-     * Makes sure MP4 is added to the allowed extensions.
-     */
     public function onCreateValidators(): void
     {
         $updateFileValidators = false;
@@ -47,11 +44,9 @@ class FileVideoBehavior extends Behavior
         }
     }
 
-    /**
-     * Sets `width` and `height` from video resolution.
-     */
     public function onBeforeValidate(): void
     {
+        /** @noinspection PhpUndefinedMethodInspection {@uses self::isVideo()} */
         if ($this->owner->upload && $this->owner->isVideo()) {
             try {
                 $getID3 = new getID3();
@@ -64,9 +59,6 @@ class FileVideoBehavior extends Behavior
         }
     }
 
-    /**
-     * @noinspection PhpUnused
-     */
     public function isVideo(): bool
     {
         return in_array($this->owner->extension, $this->allowedVideoExtensions);

@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\media\video\components\helpers;
+namespace davidhirtz\yii2\media\video\helpers;
 
 use davidhirtz\yii2\skeleton\helpers\Html;
 use yii\helpers\ArrayHelper;

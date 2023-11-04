@@ -1,6 +1,7 @@
 ## 2.0.1 (Nov 4, 2023)
 - Changed namespaces for model interfaces to `davidhirtz\yii2\media\models\interfaces`
-- 
+- Moved `\davidhirtz\yii2\media\video\components\helpers\Video` to `\davidhirtz\yii2\media\video\helpers\Video`
+
 ## v2.0.0 (Nov 3, 2023)
 - Moved source code to `src` folder
 - Added `davidhirtz\yii2\media\video\components\helpers\Video` HTML video helper tag

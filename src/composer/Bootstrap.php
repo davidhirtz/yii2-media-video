@@ -8,9 +8,6 @@ use davidhirtz\yii2\skeleton\web\Application;
 use yii\base\BootstrapInterface;
 use yii\base\Event;
 
-/**
- * Bootstrap attaches {@see FileVideoBehavior} on boot.
- */
 class Bootstrap implements BootstrapInterface
 {
     /**

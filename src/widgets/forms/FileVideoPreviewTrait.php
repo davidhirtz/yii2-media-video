@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\media\video\widgets\forms;
 
 use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\media\models\File;
+use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
 /**
@@ -17,6 +18,7 @@ trait FileVideoPreviewTrait
         $file = $this->model instanceof File ? $this->model : $this->model->file;
 
         if ($file->isVideo()) {
+            /** @var ActiveForm $this */
             return $this->row($this->offset(Html::tag('video', '', [
                 'src' => $file->getUrl(),
                 'class' => 'img-transparent',
@@ -25,6 +27,7 @@ trait FileVideoPreviewTrait
             ])));
         }
 
+        /** @noinspection PhpUndefinedClassInspection */
         return parent::previewField();
     }
 }
