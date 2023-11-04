@@ -2,7 +2,7 @@
 
 namespace davidhirtz\yii2\media\video\widgets\forms;
 
-use davidhirtz\yii2\media\models\AssetInterface;
+use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\media\models\File;
 use yii\helpers\Html;
 
