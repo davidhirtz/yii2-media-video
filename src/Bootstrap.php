@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\media\video\composer;
+namespace davidhirtz\yii2\media\video;
 
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\video\models\behaviors\FileVideoBehavior;
