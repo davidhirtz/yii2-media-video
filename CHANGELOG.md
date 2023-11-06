@@ -1,4 +1,4 @@
-## 2.0.1 (Nov 5, 2023)
+## 2.0.1 (Nov 6, 2023)
 - Changed namespaces for model interfaces to `davidhirtz\yii2\media\models\interfaces`
 - Moved `\davidhirtz\yii2\media\video\components\helpers\Video` to `\davidhirtz\yii2\media\video\helpers\Video`
 - Moved `Bootstrap` class to base package namespace for consistency
