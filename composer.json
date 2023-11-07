@@ -1,10 +1,14 @@
 {
   "name": "davidhirtz/yii2-media-video",
-  "type": "yii2-extension",
-  "description": "Yii2 video extension for yii2-media module",
-  "homepage": "https://www.davidhirtz.com/",
-  "minimum-stability": "dev",
-  "prefer-stable": true,
+  "description": "Video extension for media management module based on Yii 2.0 framework",
+  "license": "proprietary",
+  "homepage": "https://www.github.com/davidhirtz/yii2-media-video",
+  "authors": [
+    {
+      "name": "David Hirtz",
+      "homepage": "https://www.davidhirtz.com/"
+    }
+  ],
   "require": {
     "davidhirtz/yii2-media": "^2.0.2",
     "james-heinrich/getid3": "^1.9"
