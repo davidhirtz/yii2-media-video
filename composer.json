@@ -2,6 +2,7 @@
   "name": "davidhirtz/yii2-media-video",
   "description": "Video extension for media management module based on Yii 2.0 framework",
   "license": "proprietary",
+  "type": "yii2-extension",
   "homepage": "https://www.github.com/davidhirtz/yii2-media-video",
   "authors": [
     {
