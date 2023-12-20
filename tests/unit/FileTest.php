@@ -1,9 +1,9 @@
 <?php
 
-namespace davidhirtz\yii2\media\tests\unit;
+namespace davidhirtz\yii2\media\video\tests\unit;
 
 use Codeception\Test\Unit;
-use davidhirtz\yii2\media\tests\fixtures\FileFixture;
+use davidhirtz\yii2\media\video\tests\fixtures\FileFixture;
 
 class FileTest extends Unit
 {

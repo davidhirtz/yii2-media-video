@@ -1,9 +1,9 @@
 <?php
 
-namespace davidhirtz\yii2\media\tests\functional;
+namespace davidhirtz\yii2\media\video\tests\functional;
 
 use davidhirtz\yii2\skeleton\helpers\FileHelper;
-use davidhirtz\yii2\media\tests\support\FunctionalTester;
+use davidhirtz\yii2\media\video\tests\support\FunctionalTester;
 use davidhirtz\yii2\skeleton\models\User;
 use Yii;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\media\tests\unit;
+namespace davidhirtz\yii2\media\video\tests\unit;
 
 use Codeception\Test\Unit;
 use davidhirtz\yii2\media\models\Folder;
