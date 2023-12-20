@@ -2,8 +2,8 @@
 
 namespace davidhirtz\yii2\media\video\widgets\forms;
 
-use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\media\models\File;
+use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\skeleton\widgets\bootstrap\ActiveForm;
 use yii\helpers\Html;
 

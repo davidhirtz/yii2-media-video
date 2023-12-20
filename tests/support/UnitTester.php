@@ -18,7 +18,7 @@ namespace davidhirtz\yii2\media\video\tests\support;
  * @method void pause($vars = [])
  *
  * @SuppressWarnings(PHPMD)
-*/
+ */
 class UnitTester extends \Codeception\Actor
 {
     use _generated\UnitTesterActions;

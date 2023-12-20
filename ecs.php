@@ -15,7 +15,7 @@ return function (ECSConfig $ecsConfig): void {
     $ecsConfig->skip([
         __DIR__ . '/tests/support/_generated',
     ]);
-    
+
     $ecsConfig->rules([
         NoUnusedImportsFixer::class,
     ]);
