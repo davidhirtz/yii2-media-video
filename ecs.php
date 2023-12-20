@@ -12,6 +12,10 @@ return function (ECSConfig $ecsConfig): void {
         __DIR__ . '/tests',
     ]);
 
+    $ecsConfig->skip([
+        __DIR__ . '/tests/support/_generated',
+    ]);
+    
     $ecsConfig->rules([
         NoUnusedImportsFixer::class,
     ]);
