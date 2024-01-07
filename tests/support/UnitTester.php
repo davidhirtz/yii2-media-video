@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace davidhirtz\yii2\media\video\tests\support;
+namespace davidhirtz\yii2\media\tests\support;
 
 /**
  * Inherited Methods
@@ -18,7 +18,7 @@ namespace davidhirtz\yii2\media\video\tests\support;
  * @method void pause($vars = [])
  *
  * @SuppressWarnings(PHPMD)
- */
+*/
 class UnitTester extends \Codeception\Actor
 {
     use _generated\UnitTesterActions;
