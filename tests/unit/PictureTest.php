@@ -36,7 +36,8 @@ class PictureTest extends Unit
             'loading' => 'lazy',
         ]);
 
-        $this->assertEquals($expected, Picture::tag($asset, [
+        $this->assertEquals($expected, Picture::widget([
+            'asset' => $asset,
             'transformations' => [],
         ]));
     }
@@ -55,7 +56,8 @@ class PictureTest extends Unit
             'playsinline' => true,
         ]);
 
-        $this->assertEquals($expected, Picture::tag($asset, [
+        $this->assertEquals($expected, Picture::widget([
+            'asset' => $asset,
             'lazyVideoLoading' => false,
         ]));
     }
