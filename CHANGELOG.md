@@ -1,3 +1,7 @@
+## 2.1.2 (Jan 7, 2024)
+
+- Updated `Picture` widget
+
 ## 2.1.1 (Jan 7, 2024)
 
 - Added `FileThumbnailColumn` to display a video icon as thumbnail

@@ -18,9 +18,9 @@ class Picture extends \davidhirtz\yii2\media\widgets\Picture
         parent::init();
     }
 
-    public function render(): string
+    public function run(): string
     {
-        return $this->asset->file->isVideo() ? $this->getVideoTag() : parent::render();
+        return $this->asset->file->isVideo() ? $this->getVideoTag() : parent::run();
     }
 
     public function getVideoTag(): string
