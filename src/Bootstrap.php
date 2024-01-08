@@ -5,7 +5,7 @@ namespace davidhirtz\yii2\media\video;
 use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\video\models\behaviors\FileVideoBehavior;
 use davidhirtz\yii2\media\video\modules\admin\widgets\forms\fields\FilePreview;
-use davidhirtz\yii2\media\video\modules\admin\widgets\grids\columns\FileThumbnailColumn;
+use davidhirtz\yii2\media\video\modules\admin\widgets\grids\columns\Thumbnail;
 use davidhirtz\yii2\media\video\widgets\Picture;
 use davidhirtz\yii2\skeleton\web\Application;
 use Yii;
@@ -27,7 +27,7 @@ class Bootstrap implements BootstrapInterface
 
         $definitions = [
             \davidhirtz\yii2\media\modules\admin\widgets\forms\fields\FilePreview::class => FilePreview::class,
-            \davidhirtz\yii2\media\modules\admin\widgets\grids\columns\FileThumbnailColumn::class => FileThumbnailColumn::class,
+            \davidhirtz\yii2\media\modules\admin\widgets\grids\columns\Thumbnail::class => Thumbnail::class,
             \davidhirtz\yii2\media\widgets\Picture::class => Picture::class,
         ];
 

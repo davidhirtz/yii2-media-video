@@ -2,19 +2,19 @@
 
 namespace davidhirtz\yii2\media\video\modules\admin\widgets\grids\columns;
 
-use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\video\modules\admin\assets\VideoAsset;
 use davidhirtz\yii2\skeleton\helpers\Html;
+use Yii;
 
-class FileThumbnailColumn extends \davidhirtz\yii2\media\modules\admin\widgets\grids\columns\FileThumbnailColumn
+class Thumbnail extends \davidhirtz\yii2\media\modules\admin\widgets\grids\columns\Thumbnail
 {
-    protected function renderThumbnailContent(File $file): string
+    protected function renderThumbnailContent(): string
     {
-        if (!$file->isVideo()) {
-            return parent::renderThumbnailContent($file);
+        if (!$this->file->isVideo()) {
+            return parent::renderThumbnailContent();
         }
 
-        $bundle = VideoAsset::register($this->grid->getView());
+        $bundle = VideoAsset::register(Yii::$app->getView());
 
         return Html::tag('div', '', [
             'class' => 'thumb bg-dark',

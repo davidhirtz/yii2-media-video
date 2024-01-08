@@ -6,9 +6,9 @@ use yii\helpers\Html;
 
 class FilePreview extends \davidhirtz\yii2\media\modules\admin\widgets\forms\fields\FilePreview
 {
-    protected function renderField(): string
+    public function run(): string
     {
-        return $this->file->isVideo() ? $this->renderVideoTag() : parent::renderField();
+        return $this->file->isVideo() ? $this->renderVideoTag() : parent::run();
     }
 
     protected function renderVideoTag(): string
