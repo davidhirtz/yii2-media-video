@@ -50,15 +50,19 @@ class PictureTest extends Unit
         $asset->populateFileRelation($file);
 
         $expected = Html::tag('video', '', [
-            'src' => $file->getUrl(),
-            'preload' => 'auto',
-            'controls' => true,
+            'data-src' => $file->getUrl(),
+            'preload' => 'none',
             'playsinline' => true,
+            'autoplay' => true,
+            'loop' => true,
+            'muted' => "",
         ]);
 
         $this->assertEquals($expected, Picture::widget([
             'asset' => $asset,
-            'lazyVideoLoading' => false,
+            'videoOptions' => [
+                'autoplay' => true,
+            ],
         ]));
     }
 }
