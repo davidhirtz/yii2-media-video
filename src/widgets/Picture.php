@@ -8,13 +8,10 @@ use yii\helpers\ArrayHelper;
 class Picture extends \davidhirtz\yii2\media\widgets\Picture
 {
     public array $videoOptions = [];
-    public ?bool $lazyVideoLoading = null;
 
     public function init(): void
     {
-        $this->lazyVideoLoading ??= $this->defaultImageLoading === 'lazy';
         $this->prepareVideoOptions();
-
         parent::init();
     }
 
@@ -31,9 +28,10 @@ class Picture extends \davidhirtz\yii2\media\widgets\Picture
     protected function prepareVideoOptions(): void
     {
         $autoplay = ArrayHelper::remove($this->videoOptions, 'autoplay', false);
+        $lazy = ArrayHelper::remove($this->videoOptions, 'lazy', $autoplay && $this->defaultImageLoading === 'lazy');
 
-        $this->videoOptions[$this->lazyVideoLoading ? 'data-src' : 'src'] ??= $this->asset->file->getUrl();
-        $this->videoOptions['preload'] ??= $this->lazyVideoLoading ? 'none' : 'auto';
+        $this->videoOptions[$lazy ? 'data-src' : 'src'] ??= $this->asset->file->getUrl();
+        $this->videoOptions['preload'] ??= $lazy ? 'none' : 'auto';
 
         $this->videoOptions['controls'] ??= !$autoplay;
         $this->videoOptions['playsinline'] ??= true;

@@ -1,3 +1,8 @@
+## 2.1.4 (Jan 10, 2024)
+
+- Fixed Rector (Issue #1)
+- Removed `Picture::$lazyVideoLoading` in favor of `Picture::$options`
+
 ## 2.1.3 (Jan 8, 2024)
 
 - Added `davidhirtz\yii2\media\video\modules\admin\widgets\grids\columns\Thumbnail` to reflect changes in `yii2-media`
