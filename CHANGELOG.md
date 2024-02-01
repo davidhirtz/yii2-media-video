@@ -1,3 +1,7 @@
+## 2.1.5 (Feb 1, 2024)
+
+- Updated `Bootstrap` to make use of media modules `EVENT_INIT` event 
+
 ## 2.1.4 (Jan 10, 2024)
 
 - Fixed Rector (Issue #1)
