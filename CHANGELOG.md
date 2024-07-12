@@ -1,3 +1,7 @@
+## 2.1.6 (Jul 12, 2024)
+
+- Fixed an issue with `Picture::$videoOptions` not setting the `autoplay` attribute correctly
+
 ## 2.1.5 (Feb 1, 2024)
 
 - Updated `Bootstrap` to make use of media modules `EVENT_INIT` event 

@@ -50,10 +50,10 @@ class PictureTest extends Unit
         $asset->populateFileRelation($file);
 
         $expected = Html::tag('video', '', [
+            'autoplay' => true,
             'data-src' => $file->getUrl(),
             'preload' => 'none',
             'playsinline' => true,
-            'autoplay' => true,
             'loop' => true,
             'muted' => "",
         ]);
