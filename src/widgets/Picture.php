@@ -12,6 +12,8 @@ class Picture extends \davidhirtz\yii2\media\widgets\Picture
     public function init(): void
     {
         $this->prepareVideoOptions();
+        $this->addCssClass();
+
         parent::init();
     }
 
@@ -30,6 +32,7 @@ class Picture extends \davidhirtz\yii2\media\widgets\Picture
         $this->videoOptions['autoplay'] ??= false;
 
         $lazy = ArrayHelper::remove($this->videoOptions, 'lazy', $this->videoOptions['autoplay'] && $this->defaultImageLoading === 'lazy');
+        $lazyCssClass = ArrayHelper::remove($this->videoOptions, 'lazyCssClass');
 
         $this->videoOptions[$lazy ? 'data-src' : 'src'] ??= $this->asset->file->getUrl();
         $this->videoOptions['preload'] ??= $lazy ? 'none' : 'auto';
@@ -41,6 +44,17 @@ class Picture extends \davidhirtz\yii2\media\widgets\Picture
 
         if (!$this->videoOptions['controls']) {
             $this->videoOptions['muted'] ??= '';
+        }
+
+        if ($lazy && $lazyCssClass) {
+            Html::addCssClass($this->videoOptions, $lazyCssClass);
+        }
+    }
+
+    protected function addCssClass(): void
+    {
+        if ($classes = ($this->imgOptions['class'] ?? null)) {
+            Html::addCssClass($this->videoOptions, $classes);
         }
     }
 }

@@ -1,10 +1,15 @@
+## 2.1.7 (Aug 13, 2024)
+
+- Added `lazyCssClass` option to `Picture::$videoOptions` to set a CSS class for lazy loading videos
+- Enhanced `Picture::$videoOptions` to automatically apply CSS classes defined in `Picture::$imgOptions`
+
 ## 2.1.6 (Jul 12, 2024)
 
 - Fixed an issue with `Picture::$videoOptions` not setting the `autoplay` attribute correctly
 
 ## 2.1.5 (Feb 1, 2024)
 
-- Updated `Bootstrap` to make use of media modules `EVENT_INIT` event 
+- Updated `Bootstrap` to make use of media modules `EVENT_INIT` event
 
 ## 2.1.4 (Jan 10, 2024)
 
