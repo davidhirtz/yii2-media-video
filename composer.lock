@@ -123,7 +123,7 @@
             "type": "yii2-extension",
             "autoload": {
                 "psr-4": {
-                    "davidhirtz\\yii2\\datetime\\": ""
+                    "Hirtz\\Datetime\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -182,11 +182,11 @@
             },
             "type": "yii2-extension",
             "extra": {
-                "bootstrap": "davidhirtz\\yii2\\media\\Bootstrap"
+                "bootstrap": "Hirtz\\Media\\Bootstrap"
             },
             "autoload": {
                 "psr-4": {
-                    "davidhirtz\\yii2\\media\\": "src"
+                    "Hirtz\\Media\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -266,7 +266,7 @@
             "type": "yii2-extension",
             "autoload": {
                 "psr-4": {
-                    "davidhirtz\\yii2\\skeleton\\": "src"
+                    "Hirtz\\Skeleton\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -308,7 +308,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "davidhirtz\\yii2\\timeago\\": "src/"
+                    "Hirtz\\Timeago\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",

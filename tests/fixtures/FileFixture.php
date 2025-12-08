@@ -1,8 +1,8 @@
 <?php
 
-namespace davidhirtz\yii2\media\video\tests\fixtures;
+namespace Hirtz\Media\video\tests\fixtures;
 
-use davidhirtz\yii2\media\models\File;
+use Hirtz\Media\models\File;
 use yii\test\ActiveFixture;
 
 class FileFixture extends ActiveFixture

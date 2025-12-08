@@ -1,6 +1,6 @@
 <?php
 
-namespace davidhirtz\yii2\media\video\modules\admin\assets;
+namespace Hirtz\Media\video\modules\admin\assets;
 
 use yii\web\AssetBundle;
 

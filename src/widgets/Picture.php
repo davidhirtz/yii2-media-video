@@ -1,11 +1,11 @@
 <?php
 
-namespace davidhirtz\yii2\media\video\widgets;
+namespace Hirtz\Media\video\widgets;
 
-use davidhirtz\yii2\skeleton\helpers\Html;
+use Hirtz\Skeleton\helpers\Html;
 use yii\helpers\ArrayHelper;
 
-class Picture extends \davidhirtz\yii2\media\widgets\Picture
+class Picture extends \Hirtz\Media\widgets\Picture
 {
     public array $videoOptions = [];
 

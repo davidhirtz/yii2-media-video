@@ -1,11 +1,11 @@
 <?php
 
-namespace davidhirtz\yii2\media\video\tests\unit\models;
+namespace Hirtz\Media\video\tests\unit\models;
 
-use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
-use davidhirtz\yii2\media\models\traits\AssetParentTrait;
-use davidhirtz\yii2\skeleton\db\ActiveQuery;
-use davidhirtz\yii2\skeleton\db\ActiveRecord;
+use Hirtz\Media\models\interfaces\AssetParentInterface;
+use Hirtz\Media\models\traits\AssetParentTrait;
+use Hirtz\Skeleton\db\ActiveQuery;
+use Hirtz\Skeleton\db\ActiveRecord;
 
 class TestAssetParent extends ActiveRecord implements AssetParentInterface
 {

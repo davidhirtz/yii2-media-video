@@ -32,12 +32,12 @@
   },
   "autoload": {
     "psr-4": {
-      "davidhirtz\\yii2\\media\\video\\": "src"
+      "Hirtz\\Media\\video\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "davidhirtz\\yii2\\media\\video\\tests\\": "tests"
+      "Hirtz\\Media\\video\\tests\\": "tests"
     }
   },
   "config": {
@@ -50,7 +50,7 @@
     }
   },
   "extra": {
-    "bootstrap": "davidhirtz\\yii2\\media\\video\\Bootstrap"
+    "bootstrap": "Hirtz\\Media\\video\\Bootstrap"
   },
   "repositories": [
     {

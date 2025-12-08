@@ -1,13 +1,13 @@
 <?php
 
-namespace davidhirtz\yii2\media\video\tests\unit;
+namespace Hirtz\Media\video\tests\unit;
 
 use Codeception\Test\Unit;
-use davidhirtz\yii2\media\helpers\Html;
-use davidhirtz\yii2\media\tests\support\UnitTester;
-use davidhirtz\yii2\media\video\tests\fixtures\FileFixture;
-use davidhirtz\yii2\media\video\tests\unit\models\TestAsset;
-use davidhirtz\yii2\media\widgets\Picture;
+use Hirtz\Media\helpers\Html;
+use Hirtz\Media\tests\support\UnitTester;
+use Hirtz\Media\video\tests\fixtures\FileFixture;
+use Hirtz\Media\video\tests\unit\models\TestAsset;
+use Hirtz\Media\widgets\Picture;
 
 /**
  * @property UnitTester $tester

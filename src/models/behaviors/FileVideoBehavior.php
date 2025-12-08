@@ -1,8 +1,8 @@
 <?php
 
-namespace davidhirtz\yii2\media\video\models\behaviors;
+namespace Hirtz\Media\video\models\behaviors;
 
-use davidhirtz\yii2\media\models\File;
+use Hirtz\Media\models\File;
 use Exception;
 use getID3;
 use yii\base\Behavior;
