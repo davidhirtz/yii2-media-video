@@ -2,7 +2,7 @@
 
 namespace Hirtz\Media\video\widgets;
 
-use Hirtz\Skeleton\helpers\Html;
+use Hirtz\Skeleton\Helpers\Html;
 use yii\helpers\ArrayHelper;
 
 class Picture extends \Hirtz\Media\widgets\Picture

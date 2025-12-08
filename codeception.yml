@@ -10,7 +10,7 @@ extensions:
     - Codeception\Extension\RunFailed
 modules:
   config:
-    Hirtz\Skeleton\codeception\Yii2:
+    Hirtz\Skeleton\Codeception\Yii2:
       configFile: "tests/config/test.php"
 namespace: Hirtz\Media\tests
 paths:

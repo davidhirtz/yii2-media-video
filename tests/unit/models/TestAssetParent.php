@@ -4,8 +4,8 @@ namespace Hirtz\Media\video\tests\unit\models;
 
 use Hirtz\Media\models\interfaces\AssetParentInterface;
 use Hirtz\Media\models\traits\AssetParentTrait;
-use Hirtz\Skeleton\db\ActiveQuery;
-use Hirtz\Skeleton\db\ActiveRecord;
+use Hirtz\Skeleton\Db\ActiveQuery;
+use Hirtz\Skeleton\Db\ActiveRecord;
 
 class TestAssetParent extends ActiveRecord implements AssetParentInterface
 {

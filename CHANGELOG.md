@@ -18,7 +18,7 @@
 
 ## 2.1.3 (Jan 8, 2024)
 
-- Added `Hirtz\Media\video\modules\admin\widgets\grids\columns\Thumbnail` to reflect changes in `yii2-media`
+- Added `Hirtz\Media\video\Modules\Admin\Widgets\Grids\Columns\Thumbnail` to reflect changes in `yii2-media`
 
 ## 2.1.2 (Jan 7, 2024)
 
@@ -27,7 +27,7 @@
 ## 2.1.1 (Jan 7, 2024)
 
 - Added `FileThumbnailColumn` to display a video icon as thumbnail
-- Removed `FileVideoPreviewTrait` in favor of `Hirtz\Media\video\modules\admin\widgets\fields\FilePreview`
+- Removed `FileVideoPreviewTrait` in favor of `Hirtz\Media\video\Modules\Admin\Widgets\Fields\FilePreview`
   which is automatically applied in package bootstrap
 - Removed `Hirtz\Media\video\helpers\Video` in favor of an enhanced `Picture` widget
 

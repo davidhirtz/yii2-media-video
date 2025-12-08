@@ -1,5 +1,5 @@
 actor: UnitTester
 modules:
   enabled:
-    - Hirtz\Skeleton\codeception\Yii2:
+    - Hirtz\Skeleton\Codeception\Yii2:
         part: fixtures

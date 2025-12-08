@@ -1,12 +1,12 @@
 <?php
 
-namespace Hirtz\Media\video\modules\admin\widgets\grids\columns;
+namespace Hirtz\Media\video\Modules\Admin\Widgets\Grids\Columns;
 
-use Hirtz\Media\video\modules\admin\assets\VideoAsset;
-use Hirtz\Skeleton\helpers\Html;
+use Hirtz\Media\video\Modules\Admin\Assets\VideoAsset;
+use Hirtz\Skeleton\Helpers\Html;
 use Yii;
 
-class Thumbnail extends \Hirtz\Media\modules\admin\widgets\grids\columns\Thumbnail
+class Thumbnail extends \Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail
 {
     protected function renderThumbnailContent(): string
     {

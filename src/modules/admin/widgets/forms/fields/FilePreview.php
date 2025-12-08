@@ -1,10 +1,10 @@
 <?php
 
-namespace Hirtz\Media\video\modules\admin\widgets\forms\fields;
+namespace Hirtz\Media\video\Modules\Admin\Widgets\Forms\Fields;
 
 use yii\helpers\Html;
 
-class FilePreview extends \Hirtz\Media\modules\admin\widgets\forms\fields\FilePreview
+class FilePreview extends \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreview
 {
     public function run(): string
     {
