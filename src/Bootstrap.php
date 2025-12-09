@@ -25,7 +25,7 @@ class Bootstrap implements BootstrapInterface
     public function bootstrap($app): void
     {
         if (!isset($app->getModules()['media']['allowedExtensions'])) {
-            Event::on(Module::class, Module::EVENT_INIT, function (Event $event) {
+            Event::on(Module::class, Module::EVENT_INIT, function (Event $event): void {
                 /** @var Module $module */
                 $module = $event->sender;
 
@@ -36,7 +36,7 @@ class Bootstrap implements BootstrapInterface
             });
         }
 
-        Event::on(File::class, File::EVENT_INIT, function (Event $event) {
+        Event::on(File::class, File::EVENT_INIT, function (Event $event): void {
             /** @var File $file */
             $file = $event->sender;
             $file->attachBehavior('FileVideoBehavior', FileVideoBehavior::class);
