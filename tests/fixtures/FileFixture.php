@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hirtz\Media\video\tests\fixtures;
 
 use Hirtz\Media\models\File;

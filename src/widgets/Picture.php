@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hirtz\Media\video\widgets;
 
 use Hirtz\Skeleton\Helpers\Html;
@@ -9,6 +11,7 @@ class Picture extends \Hirtz\Media\widgets\Picture
 {
     public array $videoOptions = [];
 
+    #[\Override]
     public function init(): void
     {
         $this->prepareVideoOptions();

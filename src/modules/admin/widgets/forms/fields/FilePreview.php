@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hirtz\Media\video\Modules\Admin\Widgets\Forms\Fields;
 
 use yii\helpers\Html;

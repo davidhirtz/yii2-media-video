@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hirtz\Media\video\tests\unit\models;
 
 use Hirtz\Media\models\interfaces\AssetInterface;
@@ -11,6 +13,7 @@ class TestAsset extends ActiveRecord implements AssetInterface
 {
     use AssetTrait;
 
+    #[\Override]
     public function attributes(): array
     {
         return [
@@ -21,6 +24,7 @@ class TestAsset extends ActiveRecord implements AssetInterface
         ];
     }
 
+    #[\Override]
     public function rules(): array
     {
         return [

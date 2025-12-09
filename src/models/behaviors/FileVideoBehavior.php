@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hirtz\Media\video\models\behaviors;
 
 use Hirtz\Media\models\File;
@@ -12,6 +14,7 @@ use yii\base\Behavior;
  */
 class FileVideoBehavior extends Behavior
 {
+    #[\Override]
     public function events(): array
     {
         return [

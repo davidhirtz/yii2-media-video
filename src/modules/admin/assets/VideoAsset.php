@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hirtz\Media\video\Modules\Admin\Assets;
 
 use yii\web\AssetBundle;
