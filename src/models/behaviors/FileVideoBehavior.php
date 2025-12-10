@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Media\video\models\behaviors;
+namespace Hirtz\Media\video\Models\behaviors;
 
-use Hirtz\Media\models\File;
+use Hirtz\Media\Models\File;
 use Exception;
 use getID3;
 use yii\base\Behavior;

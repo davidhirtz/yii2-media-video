@@ -38,7 +38,7 @@
 
 ## 2.0.1 (Nov 6, 2023)
 
-- Changed namespaces for model interfaces to `Hirtz\Media\models\interfaces`
+- Changed namespaces for model interfaces to `Hirtz\Media\Models\interfaces`
 - Moved `Hirtz\Media\video\components\helpers\Video` to `Hirtz\Media\video\helpers\Video`
 - Moved `Bootstrap` class to base package namespace for consistency
 

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Hirtz\Media\models\collections\FolderCollection;
-use Hirtz\Media\models\Folder;
+use Hirtz\Media\Models\collections\FolderCollection;
+use Hirtz\Media\Models\Folder;
 use yii\db\Expression;
 
 $folder = FolderCollection::getDefault();

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Hirtz\Media\video;
 
-use Hirtz\Media\models\File;
+use Hirtz\Media\Models\File;
 use Hirtz\Media\Module;
-use Hirtz\Media\video\models\behaviors\FileVideoBehavior;
+use Hirtz\Media\video\Models\behaviors\FileVideoBehavior;
 use Hirtz\Media\video\Modules\Admin\Widgets\Forms\Fields\FilePreview;
 use Hirtz\Media\video\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Media\video\widgets\Picture;

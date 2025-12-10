@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Media\video\tests\unit\models;
+namespace Hirtz\Media\video\tests\unit\Models;
 
-use Hirtz\Media\models\interfaces\AssetInterface;
-use Hirtz\Media\models\interfaces\AssetParentInterface;
-use Hirtz\Media\models\traits\AssetTrait;
+use Hirtz\Media\Models\interfaces\AssetInterface;
+use Hirtz\Media\Models\interfaces\AssetParentInterface;
+use Hirtz\Media\Models\Traits\AssetTrait;
 use Hirtz\Skeleton\Db\ActiveRecord;
 
 class TestAsset extends ActiveRecord implements AssetInterface

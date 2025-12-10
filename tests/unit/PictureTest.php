@@ -8,7 +8,7 @@ use Codeception\Test\Unit;
 use Hirtz\Media\helpers\Html;
 use Hirtz\Media\tests\support\UnitTester;
 use Hirtz\Media\video\tests\fixtures\FileFixture;
-use Hirtz\Media\video\tests\unit\models\TestAsset;
+use Hirtz\Media\video\tests\unit\Models\TestAsset;
 use Hirtz\Media\widgets\Picture;
 
 /**
