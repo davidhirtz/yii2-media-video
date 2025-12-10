@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Hirtz\Media\Models\collections\FolderCollection;
+use Hirtz\Media\Models\Collections\FolderCollection;
 use Hirtz\Media\Models\Folder;
 use yii\db\Expression;
 
