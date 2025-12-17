@@ -50,7 +50,7 @@
     }
   },
   "extra": {
-    "bootstrap": "Hirtz\\Media\\video\\Bootstrap"
+    "bootstrap": "Hirtz\\Media\\Video\\Bootstrap"
   },
   "repositories": [
     {
