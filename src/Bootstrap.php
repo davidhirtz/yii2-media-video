@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Media\video;
+namespace Hirtz\Media\Video;
 
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Module;
-use Hirtz\Media\video\Models\behaviors\FileVideoBehavior;
-use Hirtz\Media\video\Modules\Admin\Widgets\Forms\Fields\FilePreview;
-use Hirtz\Media\video\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
-use Hirtz\Media\video\widgets\Picture;
+use Hirtz\Media\Video\Models\behaviors\FileVideoBehavior;
+use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreview;
+use Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
+use Hirtz\Media\Video\widgets\Picture;
 use Hirtz\Skeleton\Web\Application;
 use Yii;
 use yii\base\BootstrapInterface;

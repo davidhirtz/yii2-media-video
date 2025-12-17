@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Media\video\widgets;
+namespace Hirtz\Media\Video\widgets;
 
 use Hirtz\Skeleton\Helpers\Html;
 use yii\helpers\ArrayHelper;

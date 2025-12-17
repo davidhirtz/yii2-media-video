@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Media\video\Modules\Admin\Widgets\Grids\Columns;
+namespace Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns;
 
-use Hirtz\Media\video\Modules\Admin\Assets\VideoAsset;
+use Hirtz\Media\Video\Assets\VideoAssetBundle;
 use Hirtz\Skeleton\Helpers\Html;
 use Yii;
 
@@ -16,7 +16,7 @@ class Thumbnail extends \Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbna
             return parent::renderThumbnailContent();
         }
 
-        $bundle = VideoAsset::register(Yii::$app->getView());
+        $bundle = VideoAssetBundle::register(Yii::$app->getView());
 
         return Html::tag('div', '', [
             'class' => 'thumb bg-dark',

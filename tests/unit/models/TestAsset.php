@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Media\video\tests\unit\Models;
+namespace Hirtz\Media\Video\tests\unit\Models;
 
 use Hirtz\Media\Models\interfaces\AssetInterface;
 use Hirtz\Media\Models\interfaces\AssetParentInterface;

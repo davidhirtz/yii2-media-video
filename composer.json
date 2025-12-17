@@ -13,7 +13,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "davidhirtz/yii2-media": "v3.x-dev",
+    "davidhirtz/yii2-media": "next-dev",
     "james-heinrich/getid3": "^1.9"
   },
   "require-dev": {
@@ -32,12 +32,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Hirtz\\Media\\video\\": "src"
+      "Hirtz\\Media\\Video\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Hirtz\\Media\\video\\tests\\": "tests"
+      "Hirtz\\Media\\Video\\Tests\\": "tests"
     }
   },
   "config": {

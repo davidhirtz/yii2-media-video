@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Media\video\tests\fixtures;
+namespace Hirtz\Media\Video\tests\fixtures;
 
 use Hirtz\Media\Models\File;
 use yii\test\ActiveFixture;

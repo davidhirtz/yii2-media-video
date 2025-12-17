@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Media\video\tests\unit;
+namespace Hirtz\Media\Video\tests\unit;
 
 use Codeception\Test\Unit;
 use Hirtz\Media\helpers\Html;
 use Hirtz\Media\tests\support\UnitTester;
-use Hirtz\Media\video\tests\fixtures\FileFixture;
-use Hirtz\Media\video\tests\unit\Models\TestAsset;
+use Hirtz\Media\Video\tests\fixtures\FileFixture;
+use Hirtz\Media\Video\tests\unit\Models\TestAsset;
 use Hirtz\Media\widgets\Picture;
 
 /**

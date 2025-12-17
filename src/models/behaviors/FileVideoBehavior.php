@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Media\video\Models\behaviors;
+namespace Hirtz\Media\Video\Models\behaviors;
 
 use Hirtz\Media\Models\File;
 use Exception;

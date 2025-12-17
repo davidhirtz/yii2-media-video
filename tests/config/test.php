@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Hirtz\Media\video\Bootstrap;
+use Hirtz\Media\Video\Bootstrap;
 
 if (is_file(__DIR__ . '/db.php')) {
     require(__DIR__ . '/db.php');
