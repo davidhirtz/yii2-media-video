@@ -56,7 +56,7 @@ class Picture extends \Hirtz\Media\widgets\Picture
 
     protected function addCssClass(): void
     {
-        if ($classes = ($this->imgOptions['class'] ?? null)) {
+        if ($classes = ($this->imgAttributes['class'] ?? null)) {
             Html::addCssClass($this->videoOptions, $classes);
         }
     }
