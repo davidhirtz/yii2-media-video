@@ -7,7 +7,7 @@ namespace Hirtz\Media\Video;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Module;
 use Hirtz\Media\Video\Models\behaviors\FileVideoBehavior;
-use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreview;
+use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreviewField;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Media\Video\widgets\Picture;
 use Hirtz\Skeleton\Web\Application;
@@ -43,7 +43,7 @@ class Bootstrap implements BootstrapInterface
         });
 
         $definitions = [
-            \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreview::class => FilePreview::class,
+            \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField::class => FilePreviewField::class,
             \Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail::class => Thumbnail::class,
             \Hirtz\Media\widgets\Picture::class => Picture::class,
         ];

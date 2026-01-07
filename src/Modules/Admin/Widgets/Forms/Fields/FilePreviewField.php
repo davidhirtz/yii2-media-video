@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields;
 
+use Override;
+use Stringable;
 use yii\helpers\Html;
 
-class FilePreview extends \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreview
+class FilePreviewField extends \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField
 {
-    public function run(): string
+    #[Override]
+    protected function getContent(): string|Stringable
     {
-        return $this->file->isVideo() ? $this->renderVideoTag() : parent::run();
+        return $this->file->isVideo() ? $this->renderVideoTag() : parent::getContent();
     }
 
     protected function renderVideoTag(): string
