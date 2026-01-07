@@ -2,62 +2,73 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Media\Video\widgets;
+namespace Hirtz\Media\Video\Widgets;
 
 use Hirtz\Skeleton\Helpers\Html;
+use Hirtz\Skeleton\Html\Video;
+use Override;
+use Stringable;
 use yii\helpers\ArrayHelper;
 
 class Picture extends \Hirtz\Media\widgets\Picture
 {
-    public array $videoOptions = [];
+    protected array $videoAttributes = [];
 
-    #[\Override]
-    public function init(): void
+    public function videoAttributes(array $attributes): static
+    {
+        $this->videoAttributes = $attributes;
+        return $this;
+    }
+
+    #[Override]
+    public function configure(): void
     {
         $this->prepareVideoOptions();
         $this->addCssClass();
 
-        parent::init();
+        parent::configure();
     }
 
-    public function run(): string
+    #[Override]
+    protected function renderContent(): string|Stringable
     {
-        return $this->asset->file->isVideo() ? $this->getVideoTag() : parent::run();
+        return $this->asset->file->isVideo() ? $this->getVideoTag() : $this->getPictureTag();
     }
 
-    public function getVideoTag(): string
+    public function getVideoTag(): string|Stringable
     {
-        return Html::tag('video', '', $this->videoOptions);
+        return Video::make()
+            ->attributes($this->videoAttributes);
     }
 
     protected function prepareVideoOptions(): void
     {
-        $this->videoOptions['autoplay'] ??= false;
+        $this->videoAttributes['autoplay'] ??= false;
 
-        $lazy = ArrayHelper::remove($this->videoOptions, 'lazy', $this->videoOptions['autoplay'] && $this->defaultImageLoading === 'lazy');
-        $lazyCssClass = ArrayHelper::remove($this->videoOptions, 'lazyCssClass');
+        $lazy = ArrayHelper::remove($this->videoAttributes, 'lazy', $this->videoAttributes['autoplay'] && $this->defaultImageLoading === 'lazy');
+        $lazyCssClass = ArrayHelper::remove($this->videoAttributes, 'lazyCssClass');
 
-        $this->videoOptions[$lazy ? 'data-src' : 'src'] ??= $this->asset->file->getUrl();
-        $this->videoOptions['preload'] ??= $lazy ? 'none' : 'auto';
+        $this->videoAttributes[$lazy ? 'data-src' : 'src'] ??= $this->asset->file->getUrl();
+        $this->videoAttributes['preload'] ??= $lazy ? 'none' : 'auto';
 
-        $this->videoOptions['controls'] ??= !$this->videoOptions['autoplay'];
-        $this->videoOptions['playsinline'] ??= true;
+        $this->videoAttributes['controls'] ??= !$this->videoAttributes['autoplay'];
+        $this->videoAttributes['playsinline'] ??= true;
 
-        $this->videoOptions['loop'] ??= !$this->videoOptions['controls'];
+        $this->videoAttributes['loop'] ??= !$this->videoAttributes['controls'];
 
-        if (!$this->videoOptions['controls']) {
-            $this->videoOptions['muted'] ??= '';
+        if (!$this->videoAttributes['controls']) {
+            $this->videoAttributes['muted'] ??= '';
         }
 
         if ($lazy && $lazyCssClass) {
-            Html::addCssClass($this->videoOptions, $lazyCssClass);
+            Html::addCssClass($this->videoAttributes, $lazyCssClass);
         }
     }
 
     protected function addCssClass(): void
     {
         if ($classes = ($this->imgAttributes['class'] ?? null)) {
-            Html::addCssClass($this->videoOptions, $classes);
+            Html::addCssClass($this->videoAttributes, $classes);
         }
     }
 }
