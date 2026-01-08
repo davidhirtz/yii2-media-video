@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Media\Video\tests\unit;
 
 use Codeception\Test\Unit;
-use Hirtz\Media\helpers\Html;
+use Hirtz\Media\Helpers\Html;
 use Hirtz\Media\tests\support\UnitTester;
 use Hirtz\Media\Video\tests\fixtures\FileFixture;
 use Hirtz\Media\Video\tests\unit\Models\TestAsset;

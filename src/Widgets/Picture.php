@@ -10,7 +10,7 @@ use Override;
 use Stringable;
 use yii\helpers\ArrayHelper;
 
-class Picture extends \Hirtz\Media\widgets\Picture
+class Picture extends \Hirtz\Media\Widgets\Picture
 {
     protected array $videoAttributes = [];
 
