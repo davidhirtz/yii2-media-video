@@ -4,62 +4,56 @@ declare(strict_types=1);
 
 namespace Hirtz\Media\Video\Tests;
 
-use Hirtz\Media\widgets\Picture;
+use Hirtz\Media\Test\Models\TestAsset;
+use Hirtz\Media\Test\TestCase;
+use Hirtz\Media\Test\Traits\MediaFixtureTrait;
+use Hirtz\Media\Video\Widgets\Picture;
+use Hirtz\Skeleton\Html\Img;
+use Hirtz\Skeleton\Html\Video;
 
-/**
- * @property UnitTester $tester
- */
-class PictureTest extends Unit
+class PictureTest extends TestCase
 {
-    public function _fixtures(): array
-    {
-        return [
-            'file' => [
-                'class' => FileFixture::class,
-                'dataFile' => codecept_data_dir() . 'file.php',
-            ],
-        ];
-    }
+    use MediaFixtureTrait;
 
     public function testImageTag(): void
     {
-        $file = $this->tester->grabFixture('file', 'image');
+        $file = $this->getFileFromFixture('file-2');
 
         $asset = TestAsset::create();
         $asset->populateFileRelation($file);
 
-        $expected = Html::img($file->getUrl(), [
-            'alt' => $file->alt_text,
-            'loading' => 'lazy',
-        ]);
+        $expected = Img::make()
+            ->src($file->getUrl())
+            ->alt($file->alt_text)
+            ->loading('lazy')
+            ->render();
 
-        $this->assertEquals($expected, Picture::widget([
-            'asset' => $asset,
-            'transformations' => [],
-        ]));
+        self::assertEquals($expected, Picture::make()
+            ->asset($asset)
+            ->render());
     }
 
     public function testVideoTag(): void
     {
-        $file = $this->tester->grabFixture('file', 'video');
+        $file = $this->getFileFromFixture('file-2');
+        $file->extension = 'mp4';
 
         $asset = TestAsset::create();
         $asset->populateFileRelation($file);
 
-        $expected = Html::tag('video', '', [
-            'autoplay' => true,
-            'data-src' => $file->getUrl(),
-            'preload' => 'none',
-            'playsinline' => true,
-            'loop' => true,
-            'muted' => "",
-        ]);
-
-        $this->assertEquals($expected, Picture::widget([
-            'asset' => $asset,
-            'videoOptions' => [
+        $expected = Video::make()
+            ->attributes([
                 'autoplay' => true,
-            ],
-        ]));
+                'data-src' => $file->getUrl(),
+                'preload' => 'none',
+                'playsinline' => true,
+                'loop' => true,
+                'muted' => "",
+            ]);
+
+        self::assertEquals($expected, Picture::make()
+            ->asset($asset)
+            ->videoAttributes(['autoplay' => true])
+            ->render());
     }
 }

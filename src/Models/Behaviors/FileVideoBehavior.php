@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Hirtz\Media\Video\Models\behaviors;
+namespace Hirtz\Media\Video\Models\Behaviors;
 
 use Hirtz\Media\Models\File;
 use Exception;
 use getID3;
+use Override;
 use yii\base\Behavior;
 
 /**
@@ -14,7 +15,7 @@ use yii\base\Behavior;
  */
 class FileVideoBehavior extends Behavior
 {
-    #[\Override]
+    #[Override]
     public function events(): array
     {
         return [
