@@ -7,7 +7,7 @@ namespace Hirtz\Media\Video\Tests;
 use Hirtz\Media\Test\Models\TestAsset;
 use Hirtz\Media\Test\TestCase;
 use Hirtz\Media\Test\Traits\MediaFixtureTrait;
-use Hirtz\Media\Video\Widgets\Picture;
+use Hirtz\Media\Video\Widgets\Media;
 use Hirtz\Skeleton\Html\Img;
 use Hirtz\Skeleton\Html\Video;
 
@@ -28,7 +28,7 @@ class PictureTest extends TestCase
             ->loading('lazy')
             ->render();
 
-        self::assertEquals($expected, Picture::make()
+        self::assertEquals($expected, Media::make()
             ->asset($asset)
             ->render());
     }
@@ -43,17 +43,19 @@ class PictureTest extends TestCase
 
         $expected = Video::make()
             ->attributes([
-                'autoplay' => true,
                 'data-src' => $file->getUrl(),
-                'preload' => 'none',
+                'autoplay' => true,
                 'playsinline' => true,
                 'loop' => true,
-                'muted' => "",
-            ]);
+                'muted' => true,
+            ])
+            ->class('lazyload')
+            ->render();
 
-        self::assertEquals($expected, Picture::make()
+        self::assertEquals($expected, Media::make()
             ->asset($asset)
-            ->videoAttributes(['autoplay' => true])
+            ->autoplay()
+            ->video(fn (Video $video) => $video->addClass('lazyload'))
             ->render());
     }
 }
