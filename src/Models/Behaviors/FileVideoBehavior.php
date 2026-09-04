@@ -11,7 +11,7 @@ use Override;
 use yii\base\Behavior;
 
 /**
- * @property File $owner
+ * @extends Behavior<File>
  */
 class FileVideoBehavior extends Behavior
 {
