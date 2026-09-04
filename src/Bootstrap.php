@@ -6,10 +6,10 @@ namespace Hirtz\Media\Video;
 
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Module;
-use Hirtz\Media\Video\Models\behaviors\FileVideoBehavior;
+use Hirtz\Media\Video\Models\Behaviors\FileVideoBehavior;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreviewField;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
-use Hirtz\Media\Video\widgets\Media;
+use Hirtz\Media\Video\Widgets\Media;
 use Hirtz\Skeleton\Web\Application;
 use Yii;
 use yii\base\BootstrapInterface;
@@ -45,7 +45,7 @@ class Bootstrap implements BootstrapInterface
         $definitions = [
             \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField::class => FilePreviewField::class,
             \Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail::class => Thumbnail::class,
-            \Hirtz\Media\widgets\Media::class => Media::class,
+            \Hirtz\Media\Widgets\Media::class => Media::class,
         ];
 
         foreach ($definitions as $class => $definition) {
