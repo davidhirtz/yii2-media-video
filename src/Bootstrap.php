@@ -17,10 +17,11 @@ use yii\base\Event;
 
 class Bootstrap implements BootstrapInterface
 {
+    /** @var string[] */
     public array $allowedVideoExtensions = ['mp4', 'webm', 'ogg'];
 
     /**
-     * @param Application $app
+     * @param Application<\Hirtz\Skeleton\Models\User> $app
      */
     public function bootstrap($app): void
     {

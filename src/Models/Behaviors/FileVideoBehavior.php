@@ -15,6 +15,9 @@ use yii\base\Behavior;
  */
 class FileVideoBehavior extends Behavior
 {
+    /**
+     * @return array<string, callable>
+     */
     #[Override]
     public function events(): array
     {
