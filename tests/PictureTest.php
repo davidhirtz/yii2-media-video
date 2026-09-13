@@ -58,4 +58,46 @@ class PictureTest extends TestCase
             ->video(fn (Video $video) => $video->addClass('lazyload'))
             ->render());
     }
+
+    /**
+     * Without autoplay the browser is told to fetch the video, and an eagerly loaded one carries a real `src`.
+     */
+    public function testAVideoThatIsNotAutoplayed(): void
+    {
+        $file = $this->getFileFromFixture('file-2');
+        $file->extension = 'mp4';
+
+        $asset = TestAsset::create();
+        $asset->populateFileRelation($file);
+
+        $html = (string)Media::make()
+            ->asset($asset)
+            ->lazyLoading(false);
+
+        self::assertStringContainsString('preload="auto"', $html);
+        self::assertStringContainsString('src="' . $file->getUrl() . '"', $html);
+        self::assertStringNotContainsString('autoplay', $html);
+
+        $html = (string)Media::make()->asset($asset);
+
+        self::assertStringContainsString('preload="none"', $html);
+        self::assertStringContainsString('data-src=', $html);
+    }
+
+    public function testTheAspectRatioIsWrittenOnTheVideo(): void
+    {
+        $file = $this->getFileFromFixture('file-2');
+        $file->extension = 'mp4';
+        $file->width = 1920;
+        $file->height = 1080;
+
+        $asset = TestAsset::create();
+        $asset->populateFileRelation($file);
+
+        $html = (string)Media::make()
+            ->asset($asset)
+            ->aspectRatio(true);
+
+        self::assertStringContainsString('aspect-ratio', $html);
+    }
 }
