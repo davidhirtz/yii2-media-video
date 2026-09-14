@@ -11,10 +11,10 @@ use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreviewField;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Media\Video\Widgets\Media;
 use Hirtz\Skeleton\Base\Module as BaseModule;
+use Hirtz\Skeleton\Helpers\EventHelper;
 use Hirtz\Skeleton\Web\Application;
 use Yii;
 use yii\base\BootstrapInterface;
-use yii\base\Event;
 use yii\db\BaseActiveRecord;
 
 class Bootstrap implements BootstrapInterface
@@ -28,10 +28,7 @@ class Bootstrap implements BootstrapInterface
     public function bootstrap($app): void
     {
         if (!isset($app->getModules()['media']['allowedExtensions'])) {
-            Event::on(Module::class, BaseModule::EVENT_INIT, function (Event $event): void {
-                /** @var Module $module */
-                $module = $event->sender;
-
+            EventHelper::on(Module::class, BaseModule::EVENT_INIT, function (Module $module): void {
                 $module->allowedExtensions = [
                     ...$module->allowedExtensions,
                     ...$this->allowedVideoExtensions,
@@ -39,11 +36,11 @@ class Bootstrap implements BootstrapInterface
             });
         }
 
-        Event::on(File::class, BaseActiveRecord::EVENT_INIT, function (Event $event): void {
-            /** @var File $file */
-            $file = $event->sender;
-            $file->attachBehavior('FileVideoBehavior', FileVideoBehavior::class);
-        });
+        EventHelper::on(
+            File::class,
+            BaseActiveRecord::EVENT_INIT,
+            static fn (File $file) => $file->attachBehavior('FileVideoBehavior', FileVideoBehavior::class)
+        );
 
         $definitions = [
             \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField::class => FilePreviewField::class,
