@@ -50,4 +50,14 @@ class TestAsset extends ActiveRecord implements AssetInterface
     {
         return 'Test Parent';
     }
+
+    public function getFileCountAttributeNames(): array
+    {
+        return [];
+    }
+
+    public function getFilePanelClass(): string
+    {
+        return '';
+    }
 }
