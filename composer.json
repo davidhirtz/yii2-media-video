@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "davidhirtz/yii2-media": "next-dev",
+    "davidhirtz/yii2-media": "main-dev",
     "james-heinrich/getid3": "^1.9"
   },
   "require-dev": {
