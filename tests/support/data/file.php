@@ -1,7 +1,6 @@
 <?php
 
 use davidhirtz\yii2\media\models\collections\FolderCollection;
-use davidhirtz\yii2\media\models\Folder;
 use yii\db\Expression;
 
 $folder = FolderCollection::getDefault();

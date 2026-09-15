@@ -15,16 +15,16 @@
     "james-heinrich/getid3": "^1.9"
   },
   "require-dev": {
-    "codeception/codeception": "^5.0",
-    "codeception/module-asserts": "^3.0",
+    "codeception/codeception": "^5.2",
+    "codeception/module-asserts": "^3.1",
     "codeception/module-filesystem": "^3.0",
     "codeception/module-phpbrowser": "^3.0",
     "codeception/module-yii2": "^2.0",
     "codeception/specify": "^2.0",
     "codeception/verify": "^3.0",
-    "phpunit/phpunit": "^9.6",
+    "phpunit/phpunit": "^9",
     "rector/rector": "^2.2",
-    "symplify/easy-coding-standard": "^12.0",
+    "symplify/easy-coding-standard": "^13.0",
     "yiisoft/yii2-debug": "^2.1"
   },
   "autoload": {
