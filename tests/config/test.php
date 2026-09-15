@@ -2,10 +2,6 @@
 
 use davidhirtz\yii2\media\video\Bootstrap;
 
-if (is_file(__DIR__ . '/db.php')) {
-    require(__DIR__ . '/db.php');
-}
-
 return [
     'bootstrap' => [
         Bootstrap::class,
