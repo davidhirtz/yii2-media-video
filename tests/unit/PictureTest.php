@@ -4,6 +4,7 @@ namespace davidhirtz\yii2\media\video\tests\unit;
 
 use Codeception\Test\Unit;
 use davidhirtz\yii2\media\helpers\Html;
+use davidhirtz\yii2\media\models\File;
 use davidhirtz\yii2\media\video\tests\fixtures\FileFixture;
 use davidhirtz\yii2\media\video\tests\support\UnitTester;
 use davidhirtz\yii2\media\video\tests\unit\models\TestAsset;
@@ -26,6 +27,7 @@ class PictureTest extends Unit
 
     public function testImageTag(): void
     {
+        /** @var File $file */
         $file = $this->tester->grabFixture('file', 'image');
 
         $asset = TestAsset::create();
@@ -44,6 +46,7 @@ class PictureTest extends Unit
 
     public function testVideoTag(): void
     {
+        /** @var File $file */
         $file = $this->tester->grabFixture('file', 'video');
 
         $asset = TestAsset::create();

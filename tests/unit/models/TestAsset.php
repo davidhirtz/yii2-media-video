@@ -6,6 +6,7 @@ use davidhirtz\yii2\media\models\interfaces\AssetInterface;
 use davidhirtz\yii2\media\models\interfaces\AssetParentInterface;
 use davidhirtz\yii2\media\models\traits\AssetTrait;
 use davidhirtz\yii2\skeleton\db\ActiveRecord;
+use yii\base\Widget;
 
 class TestAsset extends ActiveRecord implements AssetInterface
 {
@@ -58,6 +59,6 @@ class TestAsset extends ActiveRecord implements AssetInterface
 
     public function getFilePanelClass(): string
     {
-        return '';
+        return Widget::class;
     }
 }
