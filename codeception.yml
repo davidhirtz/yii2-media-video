@@ -10,9 +10,11 @@ extensions:
     - Codeception\Extension\RunFailed
 modules:
   config:
-    davidhirtz\yii2\skeleton\codeception\Yii2:
+    Codeception\Module\Yii2:
+      applicationClass: davidhirtz\yii2\skeleton\web\Application
       configFile: "tests/config/test.php"
-namespace: davidhirtz\yii2\media\tests
+      entryUrl: "https://www.example.com:443/index.php"
+namespace: davidhirtz\yii2\media\video\tests
 paths:
   tests: tests
   output: tests/_output
