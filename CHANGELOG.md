@@ -1,3 +1,8 @@
+## 2.2.0 (Sep 15, 2026)
+
+- Requires PHP 8.3+
+- Updated dependencies
+
 ## 2.1.7 (Aug 13, 2024)
 
 - Added `lazyCssClass` option to `Picture::$videoOptions` to set a CSS class for lazy loading videos
