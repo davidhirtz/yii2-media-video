@@ -1,4 +1,4 @@
-## 3.0.0 (in development)
+## 3.0.0 (September 23, 2026)
 
 - Renamed the namespace `davidhirtz\yii2\media\video` to `Hirtz\Media\Video` and every directory under `src/`
   to StudlyCase; requires PHP 8.3 and `davidhirtz/yii2-media` 3.0
