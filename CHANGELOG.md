@@ -1,3 +1,25 @@
+## 3.0.0 (in development)
+
+- Renamed the namespace `davidhirtz\yii2\media\video` to `Hirtz\Media\Video` and every directory under `src/`
+  to StudlyCase; requires PHP 8.3 and `davidhirtz/yii2-media` 3.0
+- Renamed `widgets\Picture` to `Widgets\Media`, which overrides the media `Hirtz\Media\Widgets\Media` widget
+  in the container; removed `$videoOptions` and its `lazy` and `lazyCssClass` keys in favor of `autoplay()`
+  and `video(Closure)`, which is handed the `Hirtz\Skeleton\Html\Video` tag
+- Changed the video rendering: `playsinline`, `loop` and `muted` follow `autoplay()`, `data-src` follows
+  `lazyLoading()`, `preload` is `none` or `auto` for a video that does not autoplay, `aspectRatio(true)`
+  writes the file's ratio as `aspect-ratio` style, and the classes of the image are no longer copied onto the
+  video
+- Renamed `modules\admin\widgets\forms\fields\FilePreview` to
+  `Modules\Admin\Widgets\Forms\Fields\FilePreviewField`, rendering the `<video>` through `getContent()`
+  instead of `run()`
+- Changed `Modules\Admin\Widgets\Grids\Columns\Thumbnail` to render through `renderContent()` instead of
+  `renderThumbnailContent()`, with the `img-thumbnail` class instead of `thumb bg-dark`
+- Renamed `modules\admin\assets\VideoAsset` to `Assets\VideoAssetBundle`; moved `video.svg` to
+  `resources/video/`, published from the new `@media-video` alias
+- Renamed `models\behaviors\FileVideoBehavior` to `Models\Behaviors\FileVideoBehavior`; `Bootstrap` still
+  attaches it to every `Hirtz\Media\Models\File` and appends `Bootstrap::$allowedVideoExtensions` to
+  `modules.media.allowedExtensions` unless the project configures its own list
+
 ## 2.1.7 (Aug 13, 2024)
 
 - Added `lazyCssClass` option to `Picture::$videoOptions` to set a CSS class for lazy loading videos
