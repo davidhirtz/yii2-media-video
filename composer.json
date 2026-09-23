@@ -13,6 +13,7 @@
   "require": {
     "php": "^8.3",
     "davidhirtz/yii2-media": "main-dev",
+    "davidhirtz/yii2-skeleton": "main-dev",
     "james-heinrich/getid3": "^1.9"
   },
   "require-dev": {
