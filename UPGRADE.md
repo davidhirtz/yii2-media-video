@@ -93,8 +93,6 @@ What the tag carries changed with it:
 
 - `playsinline`, `loop` and `muted` are written only with `autoplay()`; v2 wrote `playsinline` always and
   derived `loop` and `muted` from `controls`.
-- `controls` is no longer written by the widget. v2 set it for every video that did not autoplay; add it
-  through `video(fn (Video $video) => $video->controls())` where the frontend relied on it.
 - `data-src` instead of `src` follows the widget's `lazyLoading()` (on by default) rather than
   `autoplay && lazy`, and `preload` is written only without autoplay: `none` while lazy, `auto` otherwise.
 - The classes of `imgOptions` are no longer copied onto the video; there is no `imgOptions`. Set the class in

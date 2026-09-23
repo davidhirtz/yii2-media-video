@@ -60,7 +60,8 @@ class PictureTest extends TestCase
     }
 
     /**
-     * Without autoplay the browser is told to fetch the video, and an eagerly loaded one carries a real `src`.
+     * Without autoplay the video has a player, the browser is told to fetch it, and an eagerly loaded one carries a
+     * real `src`.
      */
     public function testAVideoThatIsNotAutoplayed(): void
     {
@@ -77,6 +78,7 @@ class PictureTest extends TestCase
         self::assertStringContainsString('preload="auto"', $html);
         self::assertStringContainsString('src="' . $file->getUrl() . '"', $html);
         self::assertStringNotContainsString('autoplay', $html);
+        self::assertStringContainsString(' controls', $html);
 
         $html = (string)Media::make()->asset($asset);
 

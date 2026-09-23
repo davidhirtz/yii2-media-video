@@ -37,6 +37,7 @@ class Media extends \Hirtz\Media\Widgets\Media
         $video = Video::make()
             ->attribute($this->lazyLoading ? 'data-src' : 'src', $this->asset->file->getUrl())
             ->autoplay($this->autoplay)
+            ->controls(!$this->autoplay)
             ->playsinline($this->autoplay)
             ->loop($this->autoplay)
             ->muted($this->autoplay)

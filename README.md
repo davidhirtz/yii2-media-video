@@ -73,11 +73,11 @@ echo Media::make()
 ```
 
 - `autoplay()` sets `autoplay`, `playsinline`, `loop` and `muted` together; without it the tag carries
-  `preload` (`none` while `lazyLoading()` is on, `auto` otherwise) and none of the four.
+  `controls` and `preload` (`none` while `lazyLoading()` is on, `auto` otherwise) and none of the four.
 - `lazyLoading()` (on by default) writes the URL to `data-src` instead of `src`, for a loader script to pick up.
 - `aspectRatio(true)` writes the file's width and height as an `aspect-ratio` style, as it does for an image.
-- `video(Closure)` is handed the `Hirtz\Skeleton\Html\Video` tag before it renders, for a `controls`, a class
-  or any other attribute the widget does not set itself.
+- `video(Closure)` is handed the `Hirtz\Skeleton\Html\Video` tag before it renders, for a class or any other
+  attribute the widget does not set itself.
 
 ## Admin
 
