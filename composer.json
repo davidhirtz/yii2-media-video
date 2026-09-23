@@ -35,7 +35,10 @@
     }
   },
   "extra": {
-    "bootstrap": "Hirtz\\Media\\Video\\Bootstrap"
+    "bootstrap": "Hirtz\\Media\\Video\\Bootstrap",
+    "branch-alias": {
+      "dev-main": "3.x-dev"
+    }
   },
   "config": {
     "allow-plugins": {
