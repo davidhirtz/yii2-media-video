@@ -27,6 +27,8 @@ class Bootstrap implements BootstrapInterface
      */
     public function bootstrap($app): void
     {
+        Yii::setAlias('@media-video', __DIR__);
+
         if (!isset($app->getModules()['media']['allowedExtensions'])) {
             EventHelper::on(Module::class, BaseModule::EVENT_INIT, function (Module $module): void {
                 $module->allowedExtensions = [
