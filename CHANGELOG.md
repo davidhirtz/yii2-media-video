@@ -1,4 +1,4 @@
-## Unreleased
+## 3.1.0 (September 25, 2026)
 
 - Changed `Media::video()` to stack its closures, like `picture()` and `image()`
 
