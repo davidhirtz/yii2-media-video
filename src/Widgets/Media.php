@@ -12,7 +12,10 @@ use Stringable;
 class Media extends \Hirtz\Media\Widgets\Media
 {
     protected bool $autoplay = false;
-    private ?Closure $video = null;
+    /**
+     * @var list<Closure>|null
+     */
+    private ?array $videoClosures = null;
 
     public function autoplay(bool $autoplay = true): static
     {
@@ -20,9 +23,12 @@ class Media extends \Hirtz\Media\Widgets\Media
         return $this;
     }
 
-    public function video(?Closure $video): static
+    /**
+     * @param Closure(Video): Video $video
+     */
+    public function video(Closure $video): static
     {
-        $this->video = $video;
+        $this->videoClosures[] = $video;
         return $this;
     }
 
@@ -47,6 +53,6 @@ class Media extends \Hirtz\Media\Widgets\Media
             $video->addStyle(['aspect-ratio' => $this->getAspectRatio()]);
         }
 
-        return $this->video !== null ? call_user_func($this->video, $video) : $video;
+        return $this->evaluate($this->videoClosures, $video);
     }
 }

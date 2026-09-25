@@ -49,13 +49,14 @@ class PictureTest extends TestCase
                 'loop' => true,
                 'muted' => true,
             ])
-            ->class('lazyload')
+            ->class('lazyload autoplay')
             ->render();
 
         self::assertEquals($expected, Media::make()
             ->asset($asset)
             ->autoplay()
             ->video(fn (Video $video) => $video->addClass('lazyload'))
+            ->video(fn (Video $video) => $video->addClass('autoplay'))
             ->render());
     }
 

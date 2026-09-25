@@ -1,3 +1,7 @@
+## Unreleased
+
+- Changed `Media::video()` to stack its closures, like `picture()` and `image()`
+
 ## 3.0.0 (September 23, 2026)
 
 - Renamed the namespace `davidhirtz\yii2\media\video` to `Hirtz\Media\Video` and every directory under `src/`
