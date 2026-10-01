@@ -46,8 +46,9 @@ itself. A project setting its own list names the video extensions there:
 
 ### Container overrides
 
-`Bootstrap` re-points three media classes to their video-aware subclasses through the DI container, each
-only when the project has not registered a definition for that class already:
+`Bootstrap::getDefaultConfig()` re-points three media classes to their video-aware subclasses through the DI
+container. These are defaults merged under the application's configuration, so a definition the project declares
+for one of them wins:
 
 | Media class                                                       | Video subclass                                                       |
 |-------------------------------------------------------------------|----------------------------------------------------------------------|
@@ -55,8 +56,8 @@ only when the project has not registered a definition for that class already:
 | `Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField` | `Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreviewField` |
 | `Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail`       | `Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns\Thumbnail`    |
 
-A project with a subclass of its own extends the video class instead, or registers its own definition in
-`container.definitions` before the bootstrap runs and takes over the video handling itself.
+A project with a subclass of its own extends the video class instead, or declares its own definition in
+`container.definitions` and takes over the video handling itself.
 
 ## Rendering a video
 
