@@ -1,3 +1,7 @@
+## Unreleased
+
+- Changed the `davidhirtz/yii2-media` requirement to `^3.6`, the first release without `DateTimeBehavior`
+
 ## 3.2.0 (September 30, 2026)
 
 - Requires `davidhirtz/yii2-skeleton` `^3.8`: the bundle's defaults are `Bootstrap::getDefaultConfig()`, merged under the application's configuration, so a project's own configuration wins without the former "unless already set" guards
