@@ -1,4 +1,4 @@
-## Unreleased
+## 3.3.0 (October 2, 2026)
 
 - Changed the `davidhirtz/yii2-media` requirement to `^3.6`, the first release without `DateTimeBehavior`
 
