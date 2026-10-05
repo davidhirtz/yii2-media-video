@@ -1,3 +1,8 @@
+## Unreleased
+
+- Fixed the admin's file and asset forms showing no player for a video
+- Changed the `davidhirtz/yii2-media` requirement to `^3.12` (`FilePreviewField::hasPreview()`)
+
 ## 3.3.0 (October 2, 2026)
 
 - Changed the `davidhirtz/yii2-media` requirement to `^3.6`, the first release without `DateTimeBehavior`

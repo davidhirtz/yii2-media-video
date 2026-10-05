@@ -11,6 +11,12 @@ use yii\helpers\Html;
 class FilePreviewField extends \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField
 {
     #[Override]
+    protected function hasPreview(): bool
+    {
+        return $this->file->isVideo() || parent::hasPreview();
+    }
+
+    #[Override]
     protected function getContent(): string|Stringable
     {
         return $this->file->isVideo() ? $this->renderVideoTag() : parent::getContent();
