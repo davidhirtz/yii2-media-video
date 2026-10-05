@@ -1,4 +1,4 @@
-## Unreleased
+## 3.4.0 (October 5, 2026)
 
 - Fixed the admin's file and asset forms showing no player for a video
 - Changed the `davidhirtz/yii2-media` requirement to `^3.12` (`FilePreviewField::hasPreview()`)
