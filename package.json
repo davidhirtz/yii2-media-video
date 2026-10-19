@@ -4,5 +4,12 @@
     "build": "node esbuild.js",
     "dev": "node esbuild.js --watch"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "esbuild": "^0.28",
+    "esbuild-sass-plugin": "^3.3.1",
+    "postcss": "^8.4.49",
+    "typescript": "^7.0.2"
+  }
 }
