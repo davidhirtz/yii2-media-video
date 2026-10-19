@@ -69,6 +69,7 @@ class PreviewTest extends TestCase
 
         self::assertStringContainsString('<video class="img-thumbnail" src="' . $file->getUrl() . '#t=1"', $html);
         self::assertStringContainsString('preload="metadata"', $html);
+        self::assertStringContainsString('class="thumbnail-play"', $html);
     }
 
     public function testTheThumbnailOfAVideoShowsItsPreview(): void
@@ -82,6 +83,7 @@ class PreviewTest extends TestCase
 
         self::assertStringContainsString('src="' . $file->getPreviewUrl() . '"', $html);
         self::assertStringNotContainsString('<video', $html);
+        self::assertStringContainsString('class="thumbnail-play"', $html);
     }
 
     public function testTheUploadButtonLoadsTheScriptDrawingAPreview(): void
