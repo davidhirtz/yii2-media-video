@@ -11,6 +11,9 @@ use Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Media\Test\Models\TestAsset;
 use Hirtz\Media\Test\TestCase;
 use Hirtz\Media\Test\Traits\MediaFixtureTrait;
+use Hirtz\Media\Video\Assets\VideoPreviewAssetBundle;
+use Hirtz\Skeleton\Web\Application;
+use Hirtz\Skeleton\Widgets\Buttons\FileUploadButton;
 
 /**
  * Every admin preview of a file goes through a class the bundle swaps in through the container.
@@ -55,13 +58,39 @@ class PreviewTest extends TestCase
         self::assertStringNotContainsString('<video', $html);
     }
 
-    public function testTheThumbnailShowsAVideo(): void
+    public function testTheThumbnailOfAVideoWithoutPreviewIsAFrameTheBrowserDraws(): void
     {
+        $file = $this->getVideoFile();
+        $file->transformation_count = 0;
+
         $html = Thumbnail::make()
-            ->file($this->getVideoFile())
+            ->file($file)
             ->render();
 
-        self::assertStringContainsString('video.svg', $html);
+        self::assertStringContainsString('<video class="img-thumbnail" src="' . $file->getUrl() . '#t=1"', $html);
+        self::assertStringContainsString('preload="metadata"', $html);
+    }
+
+    public function testTheThumbnailOfAVideoShowsItsPreview(): void
+    {
+        $file = $this->getVideoFile();
+        $file->transformation_count = 1;
+
+        $html = Thumbnail::make()
+            ->file($file)
+            ->render();
+
+        self::assertStringContainsString('src="' . $file->getPreviewUrl() . '"', $html);
+        self::assertStringNotContainsString('<video', $html);
+    }
+
+    public function testTheUploadButtonLoadsTheScriptDrawingAPreview(): void
+    {
+        FileUploadButton::make()
+            ->url(['/admin/media/file/create'])
+            ->render();
+
+        self::assertArrayHasKey(VideoPreviewAssetBundle::class, Application::current()->getView()->assetBundles);
     }
 
     private function getVideoFile(): File

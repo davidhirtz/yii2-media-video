@@ -6,6 +6,7 @@ namespace Hirtz\Media\Video;
 
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Module;
+use Hirtz\Media\Video\Assets\VideoPreviewAssetBundle;
 use Hirtz\Media\Video\Models\Behaviors\FileVideoBehavior;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreviewField;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
@@ -14,6 +15,8 @@ use Hirtz\Skeleton\Base\ConfigBootstrapInterface;
 use Hirtz\Skeleton\Base\Module as BaseModule;
 use Hirtz\Skeleton\Helpers\EventHelper;
 use Hirtz\Skeleton\Web\Application;
+use Hirtz\Skeleton\Widgets\Buttons\FileUploadButton;
+use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Yii;
 use yii\db\BaseActiveRecord;
@@ -52,6 +55,13 @@ class Bootstrap implements ConfigBootstrapInterface
                 ];
             });
         }
+
+        // Registered with every upload button, since a grid without a video yet is where the first one is uploaded.
+        EventHelper::on(
+            FileUploadButton::class,
+            Widget::EVENT_CONFIGURE,
+            static fn () => VideoPreviewAssetBundle::register(Application::current()->getView())
+        );
 
         EventHelper::on(
             File::class,

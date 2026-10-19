@@ -1,3 +1,8 @@
+## Unreleased
+
+- Changed the `davidhirtz/yii2-media` requirement to `^3.18` and `davidhirtz/yii2-skeleton` to `^3.20` (upload previews)
+- Added a frame the browser captures on upload as a video's admin thumbnail, and the video itself as the thumbnail without one
+
 ## 3.4.0 (October 5, 2026)
 
 - Fixed the admin's file and asset forms showing no player for a video

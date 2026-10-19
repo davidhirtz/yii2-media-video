@@ -2,7 +2,9 @@
 
 Adds HTML video to [yii2-media](https://github.com/davidhirtz/yii2-media): a file with a video extension is
 accepted by the upload, rendered as a `<video>` tag by the media widget on the frontend, and previewed with a
-player and a placeholder thumbnail in the admin. The dimensions of an uploaded video are read with
+player in the admin. Its admin thumbnail is a frame the browser captures from the local file while it uploads
+(`VideoPreviewAssetBundle`, no server software needed), and the video's own first frame when the browser could not
+decode it. The dimensions of an uploaded video are read with
 [getID3](https://github.com/JamesHeinrich/getID3). The bundle depends on `davidhirtz/yii2-media` and the
 skeleton it brings along; it has no module, no messages and no migrations of its own.
 

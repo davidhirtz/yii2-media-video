@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns;
 
-use Hirtz\Media\Video\Assets\VideoAssetBundle;
-use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\Html\Video;
 use Override;
 use Stringable;
 
@@ -14,17 +13,16 @@ class Thumbnail extends \Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbna
     #[Override]
     protected function renderContent(): string|Stringable
     {
-        if (!$this->file->isVideo()) {
+        if (!$this->file->isVideo() || $this->file->getPreviewUrl()) {
             return parent::renderContent();
         }
 
-        $bundle = VideoAssetBundle::register($this->view);
-
-        return Div::make()
+        // Without a preview the browser draws a frame itself, fetching little more than the video's header.
+        return Video::make()
             ->class('img-thumbnail')
-            ->addStyle([
-                'background' => "#000 url($bundle->baseUrl/video.svg) center no-repeat",
-                'background-size' => '50%',
-            ]);
+            ->attribute('src', $this->file->getUrl() . '#t=1')
+            ->preload('metadata')
+            ->muted()
+            ->playsinline();
     }
 }

@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "node esbuild.js",
+    "dev": "node esbuild.js --watch"
+  },
+  "type": "module"
+}
