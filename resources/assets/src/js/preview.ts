@@ -1,4 +1,9 @@
-import type {FileUploadPrepareDetail} from '../../../../../yii2-skeleton/resources/assets/src/js/components/FileUpload';
+// The skeleton's `FileUploadPrepareDetail`, declared here: its sources are not part of a Composer install.
+type FileUploadPrepareDetail = {
+    file: File,
+    input: HTMLInputElement,
+    fields: Promise<[string, Blob] | null>[],
+};
 
 const MAX_WIDTH = 640;
 const TIMEOUT = 10000;
