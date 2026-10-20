@@ -20,7 +20,7 @@ class SubtitlesCustomAttribute extends UploadCustomAttribute
     {
         parent::__construct($name);
 
-        $this->label = Yii::t('media-video', 'FILE_SUBTITLES_LABEL');
+        $this->label = Yii::t('video', 'FILE_SUBTITLES_LABEL');
         $this->extensions = ['vtt'];
         $this->permission = File::AUTH_FILE;
         $this->translatable = true;
@@ -87,7 +87,7 @@ class SubtitlesCustomAttribute extends UploadCustomAttribute
     public function validateUploadedFile(UploadedFile $upload): ?string
     {
         return parent::validateUploadedFile($upload)
-            ?? ($this->isWebVtt($upload->tempName) ? null : Yii::t('media-video', 'FILE_SUBTITLES_WEBVTT_ERROR'));
+            ?? ($this->isWebVtt($upload->tempName) ? null : Yii::t('video', 'FILE_SUBTITLES_WEBVTT_ERROR'));
     }
 
     protected function isWebVtt(string $path): bool

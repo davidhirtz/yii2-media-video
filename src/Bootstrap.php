@@ -37,7 +37,7 @@ class Bootstrap implements ConfigBootstrapInterface
             'components' => [
                 'i18n' => [
                     'translations' => [
-                        'media-video' => [
+                        'video' => [
                             'class' => PhpMessageSource::class,
                             'basePath' => '@media-video/../messages',
                             'forceTranslation' => true,

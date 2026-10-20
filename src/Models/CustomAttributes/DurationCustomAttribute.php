@@ -22,7 +22,7 @@ class DurationCustomAttribute extends NumberCustomAttribute
     {
         parent::__construct($name);
 
-        $this->label = Yii::t('media-video', 'FILE_DURATION_LABEL');
+        $this->label = Yii::t('video', 'FILE_DURATION_LABEL');
         $this->min = 0;
         $this->disabled = true;
         $this->visible = static fn (File $file): bool => $file->isVideo();
