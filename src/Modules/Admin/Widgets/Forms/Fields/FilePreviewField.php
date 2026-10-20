@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields;
 
+use Hirtz\Media\Video\Models\CustomAttributes\SubtitlesCustomAttribute;
+use Hirtz\Skeleton\Html\Video;
 use Override;
 use Stringable;
-use yii\helpers\Html;
 
 class FilePreviewField extends \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField
 {
@@ -22,13 +23,13 @@ class FilePreviewField extends \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\F
         return $this->file->isVideo() ? $this->renderVideoTag() : parent::getContent();
     }
 
-    protected function renderVideoTag(): string
+    protected function renderVideoTag(): string|Stringable
     {
-        return Html::tag('video', '', [
-            'src' => $this->file->getUrl(),
-            'class' => 'img-transparent',
-            'style' => 'width:100%',
-            'controls' => true,
-        ]);
+        return Video::make()
+            ->attribute('src', $this->file->getUrl())
+            ->class('img-transparent')
+            ->addStyle(['width' => '100%'])
+            ->controls()
+            ->content(...SubtitlesCustomAttribute::getFileTracks($this->file));
     }
 }

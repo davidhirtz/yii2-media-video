@@ -6,7 +6,7 @@ player in the admin. Its admin thumbnail is a frame the browser captures from th
 (`VideoPreviewAssetBundle`, no server software needed), and the video's own first frame when the browser could not
 decode it. The dimensions of an uploaded video are read with
 [getID3](https://github.com/JamesHeinrich/getID3). The bundle depends on `davidhirtz/yii2-media` and the
-skeleton it brings along; it has no module, no messages and no migrations of its own.
+skeleton it brings along; it has no module and no migrations of its own.
 
 ## Installation
 
@@ -61,6 +61,13 @@ for one of them wins:
 A project with a subclass of its own extends the video class instead, or declares its own definition in
 `container.definitions` and takes over the video handling itself.
 
+### Subtitles
+
+Every video file has a translated `subtitles` attribute (`Models\CustomAttributes\SubtitlesCustomAttribute`,
+appended through `modules.media.fileCustomAttributes`): one WebVTT file per content language, uploaded on the file
+page by editors holding `File::AUTH_FILE`. A file must end in `.vtt` and begin with `WEBVTT`. The subtitles stay with
+the file when its upload is replaced.
+
 ## Rendering a video
 
 `Widgets\Media` renders a `<video>` for an asset whose file answers `isVideo()` and falls back to the media
@@ -79,13 +86,15 @@ echo Media::make()
   `controls` and `preload` (`none` while `lazyLoading()` is on, `auto` otherwise) and none of the four.
 - `lazyLoading()` (on by default) writes the URL to `data-src` instead of `src`, for a loader script to pick up.
 - `aspectRatio(true)` writes the file's width and height as an `aspect-ratio` style, as it does for an image.
+- `subtitles(false)` leaves out the `<track>` the widget otherwise adds for each language whose subtitles are
+  stored, labelled with the language's own name, `default` on the application language's.
 - `video(Closure)` is handed the `Hirtz\Skeleton\Html\Video` tag before it renders, for a class or any other
   attribute the widget does not set itself.
 
 ## Admin
 
 - `Modules\Admin\Widgets\Forms\Fields\FilePreviewField` shows a `<video controls>` on the file page instead of
-  the image preview.
+  the image preview, with the subtitle tracks.
 - `Modules\Admin\Widgets\Grids\Columns\Thumbnail` draws a play icon on a black `img-thumbnail` in the file
   grid, published by `Assets\VideoAssetBundle` from `resources/video/video.svg`.
 - `Models\Behaviors\FileVideoBehavior` is attached to every `Hirtz\Media\Models\File` and reads the width and

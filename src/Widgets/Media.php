@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Media\Video\Widgets;
 
 use Closure;
+use Hirtz\Media\Video\Models\CustomAttributes\SubtitlesCustomAttribute;
 use Hirtz\Skeleton\Html\Video;
 use Override;
 use Stringable;
@@ -12,6 +13,7 @@ use Stringable;
 class Media extends \Hirtz\Media\Widgets\Media
 {
     protected bool $autoplay = false;
+    protected bool $subtitles = true;
     /**
      * @var list<Closure>|null
      */
@@ -20,6 +22,12 @@ class Media extends \Hirtz\Media\Widgets\Media
     public function autoplay(bool $autoplay = true): static
     {
         $this->autoplay = $autoplay;
+        return $this;
+    }
+
+    public function subtitles(bool $subtitles = true): static
+    {
+        $this->subtitles = $subtitles;
         return $this;
     }
 
@@ -48,6 +56,10 @@ class Media extends \Hirtz\Media\Widgets\Media
             ->loop($this->autoplay)
             ->muted($this->autoplay)
             ->preload(!$this->autoplay ? ($this->lazyLoading ? 'none' : 'auto') : null);
+
+        if ($this->subtitles) {
+            $video->content(...SubtitlesCustomAttribute::getFileTracks($this->asset->file));
+        }
 
         if ($this->aspectRatio) {
             $video->addStyle(['aspect-ratio' => $this->getAspectRatio()]);

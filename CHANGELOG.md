@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Added `SubtitlesCustomAttribute`, a WebVTT file per content language on every video file
+- Added the subtitle tracks to `Widgets\Media` and `FilePreviewField`, and `Media::subtitles()` to leave them out
 - Changed the `davidhirtz/yii2-media` requirement to `^3.18` and `davidhirtz/yii2-skeleton` to `^3.20` (upload previews)
 - Added a frame the browser captures on upload as a video's admin thumbnail, and the video itself as the thumbnail without one
 

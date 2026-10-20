@@ -8,6 +8,7 @@ use Hirtz\Media\Models\File;
 use Hirtz\Media\Module;
 use Hirtz\Media\Video\Assets\VideoPreviewAssetBundle;
 use Hirtz\Media\Video\Models\Behaviors\FileVideoBehavior;
+use Hirtz\Media\Video\Models\CustomAttributes\SubtitlesCustomAttribute;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreviewField;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
 use Hirtz\Media\Video\Widgets\Media;
@@ -20,6 +21,7 @@ use Hirtz\Skeleton\Widgets\Widget;
 use Override;
 use Yii;
 use yii\db\BaseActiveRecord;
+use yii\i18n\PhpMessageSource;
 
 class Bootstrap implements ConfigBootstrapInterface
 {
@@ -27,6 +29,24 @@ class Bootstrap implements ConfigBootstrapInterface
     public static function getDefaultConfig(): array
     {
         return [
+            'components' => [
+                'i18n' => [
+                    'translations' => [
+                        'media-video' => [
+                            'class' => PhpMessageSource::class,
+                            'basePath' => '@media-video/../messages',
+                            'forceTranslation' => true,
+                        ],
+                    ],
+                ],
+            ],
+            'modules' => [
+                'media' => [
+                    'fileCustomAttributes' => [
+                        static fn (): array => [SubtitlesCustomAttribute::make('subtitles')],
+                    ],
+                ],
+            ],
             'container' => [
                 'definitions' => [
                     \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField::class => FilePreviewField::class,
