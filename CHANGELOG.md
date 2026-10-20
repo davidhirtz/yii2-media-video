@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Added the MCP tools `get_subtitles` and `set_subtitles`
 - Added `SubtitlesCustomAttribute`, a WebVTT file per content language on every video file
 - Added the subtitle tracks to `Widgets\Media` and `FilePreviewField`, and `Media::subtitles()` to leave them out
 - Changed the `davidhirtz/yii2-media` requirement to `^3.18` and `davidhirtz/yii2-skeleton` to `^3.20` (upload previews)

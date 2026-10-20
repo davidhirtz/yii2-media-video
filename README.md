@@ -68,6 +68,11 @@ appended through `modules.media.fileCustomAttributes`): one WebVTT file per cont
 page by editors holding `File::AUTH_FILE`. A file must end in `.vtt` and begin with `WEBVTT`. The subtitles stay with
 the file when its upload is replaced.
 
+Over MCP, `get_record` answers each language's subtitles as their URL, and two tools beside the `file` resource
+(`File::AUTH_FILE` only) read and write the text an agent translates: `get_subtitles` (`file`, `language`) answers the
+WebVTT text, `set_subtitles` (`file`, `language`, `vtt`, `null` removes) stores it through the same validation as an
+admin upload.
+
 ## Rendering a video
 
 `Widgets\Media` renders a `<video>` for an asset whose file answers `isVideo()` and falls back to the media

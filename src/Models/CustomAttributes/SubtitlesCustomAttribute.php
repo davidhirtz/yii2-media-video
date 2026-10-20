@@ -54,19 +54,18 @@ class SubtitlesCustomAttribute extends UploadCustomAttribute
             return [];
         }
 
-        $upload = $this->getUpload();
         $tracks = [];
 
         foreach ($file->getI18nAttributeNames($this->name) as $language => $attribute) {
-            $filename = $file->getAttribute($attribute);
+            $url = $this->getUrl($file, $attribute);
 
-            if (!is_string($filename) || $filename === '' || $upload->isToken($filename)) {
+            if ($url === null) {
                 continue;
             }
 
             $tracks[] = Track::make()
                 ->kind('subtitles')
-                ->src($upload->getUrl($file, $attribute, $filename))
+                ->src($url)
                 ->srclang($language)
                 ->label($this->getLanguageLabel($language))
                 ->default($language === Yii::$app->language);

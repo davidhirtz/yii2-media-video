@@ -7,6 +7,8 @@ namespace Hirtz\Media\Video;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Module;
 use Hirtz\Media\Video\Assets\VideoPreviewAssetBundle;
+use Hirtz\Media\Video\Mcp\GetSubtitlesTool;
+use Hirtz\Media\Video\Mcp\SetSubtitlesTool;
 use Hirtz\Media\Video\Models\Behaviors\FileVideoBehavior;
 use Hirtz\Media\Video\Models\CustomAttributes\SubtitlesCustomAttribute;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreviewField;
@@ -15,6 +17,7 @@ use Hirtz\Media\Video\Widgets\Media;
 use Hirtz\Skeleton\Base\ConfigBootstrapInterface;
 use Hirtz\Skeleton\Base\Module as BaseModule;
 use Hirtz\Skeleton\Helpers\EventHelper;
+use Hirtz\Skeleton\Mcp\Mcp;
 use Hirtz\Skeleton\Web\Application;
 use Hirtz\Skeleton\Widgets\Buttons\FileUploadButton;
 use Hirtz\Skeleton\Widgets\Widget;
@@ -37,6 +40,12 @@ class Bootstrap implements ConfigBootstrapInterface
                             'basePath' => '@media-video/../messages',
                             'forceTranslation' => true,
                         ],
+                    ],
+                ],
+                'mcp' => [
+                    'tools' => [
+                        static fn (Mcp $mcp): GetSubtitlesTool => new GetSubtitlesTool($mcp),
+                        static fn (Mcp $mcp): SetSubtitlesTool => new SetSubtitlesTool($mcp),
                     ],
                 ],
             ],
