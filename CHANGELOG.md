@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Added a video file's duration in seconds (`DurationCustomAttribute`), read on upload, and `file/duration` to read it for videos stored before
 - Added the MCP tools `get_subtitles` and `set_subtitles`
 - Added `SubtitlesCustomAttribute`, a WebVTT file per content language on every video file
 - Added the subtitle tracks to `Widgets\Media` and `FilePreviewField`, and `Media::subtitles()` to leave them out

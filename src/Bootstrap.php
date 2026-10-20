@@ -7,9 +7,11 @@ namespace Hirtz\Media\Video;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Module;
 use Hirtz\Media\Video\Assets\VideoPreviewAssetBundle;
+use Hirtz\Media\Video\Console\Controllers\FileController;
 use Hirtz\Media\Video\Mcp\GetSubtitlesTool;
 use Hirtz\Media\Video\Mcp\SetSubtitlesTool;
 use Hirtz\Media\Video\Models\Behaviors\FileVideoBehavior;
+use Hirtz\Media\Video\Models\CustomAttributes\DurationCustomAttribute;
 use Hirtz\Media\Video\Models\CustomAttributes\SubtitlesCustomAttribute;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreviewField;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
@@ -52,12 +54,16 @@ class Bootstrap implements ConfigBootstrapInterface
             'modules' => [
                 'media' => [
                     'fileCustomAttributes' => [
-                        static fn (): array => [SubtitlesCustomAttribute::make('subtitles')],
+                        static fn (): array => [
+                            SubtitlesCustomAttribute::make('subtitles'),
+                            DurationCustomAttribute::make('duration'),
+                        ],
                     ],
                 ],
             ],
             'container' => [
                 'definitions' => [
+                    \Hirtz\Media\Console\Controllers\FileController::class => FileController::class,
                     \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField::class => FilePreviewField::class,
                     \Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail::class => Thumbnail::class,
                     \Hirtz\Media\Widgets\Media::class => Media::class,

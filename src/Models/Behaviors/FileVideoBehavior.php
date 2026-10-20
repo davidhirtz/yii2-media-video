@@ -6,7 +6,7 @@ namespace Hirtz\Media\Video\Models\Behaviors;
 
 use Hirtz\Media\Models\File;
 use Exception;
-use getID3;
+use Hirtz\Media\Video\Helpers\VideoAnalyzer;
 use Override;
 use yii\base\Behavior;
 
@@ -30,10 +30,13 @@ class FileVideoBehavior extends Behavior
     {
         if ($this->owner->upload && $this->owner->isVideo()) {
             try {
-                $getID3 = new getID3();
-                $file = $getID3->analyze($this->owner->upload->tempName);
-                $this->owner->width = $file['video']['resolution_x'] ?? null;
-                $this->owner->height = $file['video']['resolution_y'] ?? null;
+                $info = VideoAnalyzer::analyze($this->owner->upload->tempName);
+                $this->owner->width = $info['video']['resolution_x'] ?? null;
+                $this->owner->height = $info['video']['resolution_y'] ?? null;
+
+                if ($this->owner->hasAttribute('duration')) {
+                    $this->owner->setAttribute('duration', VideoAnalyzer::getDuration($info));
+                }
             } catch (Exception $exception) {
                 $this->owner->addError('upload', $exception->getMessage());
             }

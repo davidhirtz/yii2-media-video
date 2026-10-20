@@ -5,6 +5,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'FILE_DURATION_LABEL' => 'Duration',
     'FILE_SUBTITLES_LABEL' => 'Subtitles',
     'FILE_SUBTITLES_WEBVTT_ERROR' => 'The file is not a WebVTT file: it must begin with “WEBVTT”.',
 ];

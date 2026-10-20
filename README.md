@@ -15,7 +15,7 @@ composer require davidhirtz/yii2-media-video
 ```
 
 The bundle bootstraps itself through `extra.bootstrap` (`Hirtz\Media\Video\Bootstrap`). Nothing needs to run
-afterwards: there are no migrations, and no console commands.
+afterwards: there are no migrations; `file/duration` reads the duration of videos uploaded before.
 
 ## Configuration
 
@@ -48,7 +48,7 @@ itself. A project setting its own list names the video extensions there:
 
 ### Container overrides
 
-`Bootstrap::getDefaultConfig()` re-points three media classes to their video-aware subclasses through the DI
+`Bootstrap::getDefaultConfig()` re-points four media classes to their video-aware subclasses through the DI
 container. These are defaults merged under the application's configuration, so a definition the project declares
 for one of them wins:
 
@@ -57,6 +57,7 @@ for one of them wins:
 | `Hirtz\Media\Widgets\Media`                                       | `Hirtz\Media\Video\Widgets\Media`                                    |
 | `Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField` | `Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreviewField` |
 | `Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail`       | `Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns\Thumbnail`    |
+| `Hirtz\Media\Console\Controllers\FileController`                 | `Hirtz\Media\Video\Console\Controllers\FileController`              |
 
 A project with a subclass of its own extends the video class instead, or declares its own definition in
 `container.definitions` and takes over the video handling itself.
@@ -72,6 +73,12 @@ Over MCP, `get_record` answers each language's subtitles as their URL, and two t
 (`File::AUTH_FILE` only) read and write the text an agent translates: `get_subtitles` (`file`, `language`) answers the
 WebVTT text, `set_subtitles` (`file`, `language`, `vtt`, `null` removes) stores it through the same validation as an
 admin upload.
+
+### Duration
+
+Every video file has a read-only `duration` attribute (`Models\CustomAttributes\DurationCustomAttribute`) in whole
+seconds, read from the upload by getID3 and shown as `H:MM:SS` in the admin; agents read it through `get_record`.
+Videos stored before the bundle read it get it from `./yii file/duration`.
 
 ## Rendering a video
 
