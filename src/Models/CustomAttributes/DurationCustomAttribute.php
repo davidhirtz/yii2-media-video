@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Media\Video\Models\CustomAttributes;
 
 use Hirtz\Media\Models\File;
-use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FormTextField;
 use Hirtz\Skeleton\Models\CustomAttributes\NumberCustomAttribute;
-use Hirtz\Skeleton\Widgets\Forms\Fields\Field;
 use Override;
 use Stringable;
 use Yii;
@@ -24,7 +22,7 @@ class DurationCustomAttribute extends NumberCustomAttribute
 
         $this->label = Yii::t('video', 'FILE_DURATION_LABEL');
         $this->min = 0;
-        $this->disabled = true;
+        $this->plainText = true;
         $this->visible = static fn (File $file): bool => $file->isVideo();
     }
 
@@ -36,12 +34,5 @@ class DurationCustomAttribute extends NumberCustomAttribute
         }
 
         return sprintf('%d:%02d:%02d', intdiv($value, 3600), intdiv($value % 3600, 60), $value % 60);
-    }
-
-    #[Override]
-    public function createField(Model $owner): Field
-    {
-        $value = $this->formatValue($owner, $owner->{$this->name});
-        return $this->configureField(FormTextField::make()->content(is_string($value) ? $value : null), $owner);
     }
 }
