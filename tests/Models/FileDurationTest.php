@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hirtz\Media\Video\Tests\Models;
 
 use Hirtz\Media\Models\File;
+use Hirtz\Media\Modules\Admin\Widgets\Forms\FileActiveForm;
 use Hirtz\Media\Test\TestCase;
 use Hirtz\Media\Test\Traits\MediaFileTrait;
 use Hirtz\Media\Video\Console\Controllers\FileController;
@@ -48,6 +49,18 @@ class FileDurationTest extends TestCase
 
         self::assertSame('0:00:03', $definition->formatValue($file, 3));
         self::assertSame('1:01:05', $definition->formatValue($file, 3665));
+    }
+
+    public function testTheFormShowsTheDurationAsText(): void
+    {
+        $file = $this->insertVideo();
+        $html = (string)FileActiveForm::make()->model($file);
+
+        self::assertMatchesRegularExpression('#<div class="label">Duration</div>.*?<div class="form-text">0:00:03</div>#s', $html);
+        self::assertStringNotContainsString('File[duration]', $html);
+
+        $file->setAttribute('duration', null);
+        self::assertStringNotContainsString('Duration', (string)FileActiveForm::make()->model($file));
     }
 
     public function testAnImageHasNoDuration(): void

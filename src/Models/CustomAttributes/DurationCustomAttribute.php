@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Hirtz\Media\Video\Models\CustomAttributes;
 
 use Hirtz\Media\Models\File;
+use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FormTextField;
 use Hirtz\Skeleton\Models\CustomAttributes\NumberCustomAttribute;
 use Hirtz\Skeleton\Widgets\Forms\Fields\Field;
-use Hirtz\Skeleton\Widgets\Forms\Fields\InputField;
 use Override;
 use Stringable;
 use Yii;
@@ -42,6 +42,6 @@ class DurationCustomAttribute extends NumberCustomAttribute
     public function createField(Model $owner): Field
     {
         $value = $this->formatValue($owner, $owner->{$this->name});
-        return $this->configureField(InputField::make()->attribute('value', is_string($value) ? $value : null), $owner);
+        return $this->configureField(FormTextField::make()->content(is_string($value) ? $value : null), $owner);
     }
 }
