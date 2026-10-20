@@ -1,4 +1,4 @@
-## Unreleased
+## 3.5.0 (October 20, 2026)
 
 - Added a video file's duration in seconds (`DurationCustomAttribute`), read on upload, and `file/duration` to read it for videos stored before
 - Added the MCP tools `get_subtitles` and `set_subtitles`
