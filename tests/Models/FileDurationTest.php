@@ -59,6 +59,9 @@ class FileDurationTest extends TestCase
         self::assertMatchesRegularExpression('#<div class="label">Duration</div>.*?<div class="form-text">0:00:03</div>#s', $html);
         self::assertStringNotContainsString('File[duration]', $html);
 
+        preg_match('#<fieldset(?:(?!</fieldset>).)*?0:00:03.*?</fieldset>#s', $html, $fieldset);
+        self::assertStringContainsString('id="file-size-row"', $fieldset[0] ?? self::fail('No fieldset holds the duration.'));
+
         $file->setAttribute('duration', null);
         self::assertStringNotContainsString('Duration', (string)FileActiveForm::make()->model($file));
     }
