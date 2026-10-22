@@ -1,4 +1,4 @@
-## Unreleased
+## 3.6.0 (October 22, 2026)
 
 - Changed the `davidhirtz/yii2-media` requirement to `^3.20` (`Module::$videoExtensions`)
 - Changed `File::isVideo()` and `file/duration` to follow `Bootstrap::$allowedVideoExtensions`
