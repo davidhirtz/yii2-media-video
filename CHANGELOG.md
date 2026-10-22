@@ -1,3 +1,8 @@
+## Unreleased
+
+- Changed the `davidhirtz/yii2-media` requirement to `^3.20` (`Module::$videoExtensions`)
+- Changed `File::isVideo()` and `file/duration` to follow `Bootstrap::$allowedVideoExtensions`
+
 ## 3.5.0 (October 20, 2026)
 
 - Added a video file's duration in seconds (`DurationCustomAttribute`), read on upload, and `file/duration` to read it for videos stored before

@@ -82,14 +82,18 @@ class Bootstrap implements ConfigBootstrapInterface
     {
         Yii::setAlias('@media-video', __DIR__);
 
-        if (!isset($app->getModules()['media']['allowedExtensions'])) {
-            EventHelper::on(Module::class, BaseModule::EVENT_INIT, function (Module $module): void {
+        $isAllowedExtensionsConfigured = isset($app->getModules()['media']['allowedExtensions']);
+
+        EventHelper::on(Module::class, BaseModule::EVENT_INIT, function (Module $module) use ($isAllowedExtensionsConfigured): void {
+            $module->videoExtensions = array_values($this->allowedVideoExtensions);
+
+            if (!$isAllowedExtensionsConfigured) {
                 $module->allowedExtensions = [
                     ...$module->allowedExtensions,
                     ...$this->allowedVideoExtensions,
                 ];
-            });
-        }
+            }
+        });
 
         // Registered with every upload button, since a grid without a video yet is where the first one is uploaded.
         EventHelper::on(

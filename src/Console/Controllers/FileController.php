@@ -22,7 +22,7 @@ class FileController extends \Hirtz\Media\Console\Controllers\FileController
         $count = 0;
 
         /** @var File $file */
-        foreach (File::find()->andWhere(['extension' => ['mp4', 'ogg', 'webm']])->each() as $file) {
+        foreach (File::find()->andWhere(['extension' => File::getModule()->videoExtensions])->each() as $file) {
             if (!$file->isVideo() || !$file->hasAttribute('duration') || $file->getAttribute('duration') !== null) {
                 continue;
             }
