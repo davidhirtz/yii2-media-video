@@ -34,4 +34,12 @@ class VideoExtensionsTest extends TestCase
         $file->extension = 'webm';
         self::assertFalse($file->isVideo());
     }
+
+    public function testAProjectsOwnVideoExtensionsSurvive(): void
+    {
+        $this->config['modules']['media']['videoExtensions'] = ['mp4', 'mov'];
+        $this->reloadApplication();
+
+        self::assertSame(['mp4', 'mov'], File::getModule()->videoExtensions);
+    }
 }

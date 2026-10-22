@@ -82,10 +82,14 @@ class Bootstrap implements ConfigBootstrapInterface
     {
         Yii::setAlias('@media-video', __DIR__);
 
-        $isAllowedExtensionsConfigured = isset($app->getModules()['media']['allowedExtensions']);
+        $config = $app->getModules()['media'] ?? [];
+        $isAllowedExtensionsConfigured = isset($config['allowedExtensions']);
+        $isVideoExtensionsConfigured = isset($config['videoExtensions']);
 
-        EventHelper::on(Module::class, BaseModule::EVENT_INIT, function (Module $module) use ($isAllowedExtensionsConfigured): void {
-            $module->videoExtensions = array_values($this->allowedVideoExtensions);
+        EventHelper::on(Module::class, BaseModule::EVENT_INIT, function (Module $module) use ($isAllowedExtensionsConfigured, $isVideoExtensionsConfigured): void {
+            if (!$isVideoExtensionsConfigured) {
+                $module->videoExtensions = array_values($this->allowedVideoExtensions);
+            }
 
             if (!$isAllowedExtensionsConfigured) {
                 $module->allowedExtensions = [
