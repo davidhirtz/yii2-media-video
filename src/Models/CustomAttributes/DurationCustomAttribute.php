@@ -12,7 +12,7 @@ use Yii;
 use yii\base\Model;
 
 /**
- * Whole seconds, read from the upload by {@see \Hirtz\Media\Video\Models\Behaviors\FileVideoBehavior}.
+ * Read from the upload by {@see \Hirtz\Media\Video\Models\Behaviors\FileVideoBehavior}.
  */
 class DurationCustomAttribute extends NumberCustomAttribute
 {

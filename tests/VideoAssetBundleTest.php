@@ -10,8 +10,7 @@ use Hirtz\Skeleton\Web\Application;
 use Yii;
 
 /**
- * The bundle hardcoded a `@vendor` path to a directory that had moved, and nothing rendered a video thumbnail
- * in a test (monorepo issue #239).
+ * The bundle hardcoded a moved `@vendor` path that no test rendered (monorepo issue #239).
  */
 class VideoAssetBundleTest extends TestCase
 {

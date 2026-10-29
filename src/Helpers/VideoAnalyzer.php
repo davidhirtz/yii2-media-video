@@ -35,7 +35,6 @@ class VideoAnalyzer
 
     /**
      * @param array<string, mixed> $info
-     * @return int|null the duration in whole seconds
      */
     public static function getDuration(array $info): ?int
     {
