@@ -405,6 +405,89 @@ class StreamingTest extends TestCase
         self::assertInstanceOf(VideoStreamController::class, Yii::$app->createController('video-stream')[0] ?? null);
     }
 
+    public function testASubmitThatCannotBuildItsUrlsKeepsThePlayableStream(): void
+    {
+        $this->applicationClass = ConsoleApplication::class;
+        $this->config['components']['videoStream']['submitByUrl'] = false;
+        $this->reloadApplication();
+
+        $file = $this->insertVideo();
+        $ready = new StreamState('fake', 'fake-ready', StreamStatus::Ready, scope: 'fake-library');
+        $this->getManager()->saveState($file, $ready);
+        $this->getManager()->submitByUrl = true;
+        $this->getProvider()->calls = [];
+
+        $controller = $this->createController();
+        $controller->fileId = $file->id;
+
+        self::assertSame(ExitCode::UNSPECIFIED_ERROR, $controller->actionSubmit());
+        self::assertSame([], $this->getProvider()->calls, 'Nothing is deleted or submitted.');
+        self::assertSame($ready->toArray(), $this->findState($file)?->toArray());
+    }
+
+    public function testAnEditorsSaveKeepsTheStateAWebhookWroteMeanwhile(): void
+    {
+        $file = $this->insertVideo();
+        $form = $this->reload($file);
+
+        $ready = $this->getState($file)->withStatus(StreamStatus::Ready);
+        $this->getManager()->saveState($file, $ready);
+
+        $form->name = 'Grüße 🎬';
+        self::assertSame(1, $form->update());
+
+        self::assertSame($ready->toArray(), $this->findState($file)?->toArray());
+    }
+
+    public function testAWebhookKeepsWhatAnEditorSavedMeanwhile(): void
+    {
+        $file = $this->insertVideo();
+        $webhook = $this->reload($file);
+
+        $form = $this->reload($file);
+        $form->setAttribute('duration', 42);
+        self::assertSame(1, $form->update());
+
+        $this->getProvider()->status = StreamStatus::Failed;
+        $this->getProvider()->error = 'Ошибка 🎬 Mu' . "\u{308}" . 'ller';
+        $this->getManager()->refresh($webhook);
+
+        $stored = $this->reload($file);
+
+        self::assertSame(42, $stored->getAttribute('duration'));
+        self::assertSame('Ошибка 🎬 Mu' . "\u{308}" . 'ller', $this->getManager()->getState($stored)?->error);
+    }
+
+    public function testARefreshNeverWritesAnOlderStateOverANewerOne(): void
+    {
+        $file = $this->insertVideo();
+        $late = $this->reload($file);
+
+        $this->getManager()->saveState($file, $this->getState($file)->withStatus(StreamStatus::Ready));
+        $this->getProvider()->status = StreamStatus::Processing;
+
+        self::assertSame(StreamStatus::Ready, $this->getManager()->refresh($late)?->status);
+        self::assertSame(StreamStatus::Ready, $this->findState($file)?->status);
+
+        $resubmitted = $this->getManager()->submit($file);
+        $this->getManager()->refresh($late);
+
+        self::assertSame($resubmitted->id, $this->findState($file)->id ?? null, 'A refresh of the replaced video is dropped.');
+    }
+
+    /**
+     * `setup` and `webhook` register what the console builds, so it must be the URL the web application answers.
+     */
+    public function testTheConsoleBuildsTheWebhookUrlOfTheWebRule(): void
+    {
+        $this->applicationClass = ConsoleApplication::class;
+        $this->config['components']['urlManager']['hostInfo'] = 'https://www.test.localhost';
+        $this->config['components']['urlManager']['baseUrl'] = '';
+        $this->reloadApplication();
+
+        self::assertSame('https://www.test.localhost/video-stream/webhook', $this->getManager()->getWebhookUrl());
+    }
+
     public function testDeletingTheFileDeletesTheRemoteVideo(): void
     {
         $file = $this->insertVideo();
@@ -569,7 +652,12 @@ class StreamingTest extends TestCase
 
     private function findState(File $file): ?StreamState
     {
-        return $this->getManager()->getState(File::findOne($file->id) ?? self::fail('The file is gone.'));
+        return $this->getManager()->getState($this->reload($file));
+    }
+
+    private function reload(File $file): File
+    {
+        return File::findOne($file->id) ?? self::fail('The file is gone.');
     }
 
     private function getState(?File $file): StreamState

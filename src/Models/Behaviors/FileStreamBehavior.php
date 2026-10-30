@@ -26,7 +26,7 @@ class FileStreamBehavior extends Behavior
     {
         return [
             File::EVENT_BEFORE_INSERT => $this->onBeforeSave(...),
-            File::EVENT_BEFORE_UPDATE => $this->onBeforeSave(...),
+            File::EVENT_BEFORE_UPDATE => $this->onBeforeUpdate(...),
             File::EVENT_AFTER_INSERT => $this->onAfterSave(...),
             File::EVENT_AFTER_UPDATE => $this->onAfterSave(...),
         ];
@@ -35,6 +35,18 @@ class FileStreamBehavior extends Behavior
     public function onBeforeSave(): void
     {
         $this->isUploaded = $this->owner->upload !== null;
+    }
+
+    /**
+     * Only {@see StreamManager::saveState()} writes the state, so a form loaded before a webhook keeps the stored one.
+     */
+    public function onBeforeUpdate(): void
+    {
+        $this->onBeforeSave();
+
+        if ($this->owner->hasAttribute(StreamManager::ATTRIBUTE)) {
+            $this->owner->setAttribute(StreamManager::ATTRIBUTE, StreamManager::getComponent()->findStoredState($this->owner));
+        }
     }
 
     /**

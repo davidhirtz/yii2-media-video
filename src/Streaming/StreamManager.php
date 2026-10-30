@@ -81,13 +81,20 @@ class StreamManager extends Component
      */
     public function submit(File $file): StreamState
     {
+        $provider = $this->getProvider();
+
+        // Built before the delete: a console without `urlManager.hostInfo` throws, and the stream it has stays playable.
+        try {
+            $url = $this->submitByUrl ? Url::to($file->getUrl(), true) : null;
+            $webhookUrl = $this->getWebhookUrl();
+        } catch (Exception $exception) {
+            return StreamState::failed($provider->getName(), $exception->getMessage())->withScope($provider->getScope());
+        }
+
         $this->deleteRemote($file);
 
-        $provider = $this->getProvider();
-        $url = $this->submitByUrl ? Url::to($file->getUrl(), true) : null;
-
         try {
-            $state = $provider->submit($file, $url, $this->getWebhookUrl());
+            $state = $provider->submit($file, $url, $webhookUrl);
         } catch (Exception $exception) {
             Yii::error($exception, __METHOD__);
             $state = StreamState::failed($provider->getName(), $exception->getMessage());
@@ -115,11 +122,23 @@ class StreamManager extends Component
             return $state;
         }
 
-        if ($fetched->toArray() !== $state->toArray()) {
-            $this->saveState($file, $fetched);
-        }
+        // Compared with the row, not the copy loaded before the request: a resubmit or a later webhook may have won.
+        return File::getDb()->transaction(function () use ($file, $fetched): StreamState {
+            $stored = $this->findStoredState($file, true);
 
-        return $fetched;
+            if ($stored === null || $stored->id !== $fetched->id || ($stored->isReady() && $fetched->status->isInProgress())) {
+                $file->setAttribute(self::ATTRIBUTE, $stored);
+                $file->setOldAttribute(self::ATTRIBUTE, $stored);
+
+                return $stored ?? $fetched;
+            }
+
+            if ($fetched->toArray() !== $stored->toArray()) {
+                $this->saveState($file, $fetched);
+            }
+
+            return $fetched;
+        });
     }
 
     /**
@@ -141,12 +160,39 @@ class StreamManager extends Component
     }
 
     /**
-     * Without validation, so a webhook or a command writes the state alone.
+     * Writes the `stream` key alone, so a webhook never writes back what an editor saved meanwhile; no hooks, no trail.
      */
     public function saveState(File $file, ?StreamState $state): void
     {
+        $column = $file->getCustomAttributesColumn();
+        $path = '$.' . self::ATTRIBUTE;
+
+        $expression = $state === null
+            ? new Expression("JSON_REMOVE([[$column]], '$path')")
+            : new Expression("JSON_SET(COALESCE([[$column]], '{}'), '$path', JSON_EXTRACT(:state, '$'))", [
+                ':state' => json_encode($state, JSON_THROW_ON_ERROR),
+            ]);
+
+        File::updateAll([$column => $expression], ['id' => $file->id]);
+
         $file->setAttribute(self::ATTRIBUTE, $state);
-        $file->update(false, [$file->getCustomAttributesColumn()]);
+        $file->setOldAttribute(self::ATTRIBUTE, $state);
+
+        File::getModule()->invalidatePageCache();
+    }
+
+    /**
+     * Read off the row rather than the record, which may have been loaded before the last write.
+     */
+    public function findStoredState(File $file, bool $forUpdate = false): ?StreamState
+    {
+        $column = $file->getCustomAttributesColumn();
+        $path = '$.' . self::ATTRIBUTE;
+
+        $sql = 'SELECT JSON_EXTRACT([[' . $column . "]], '$path') FROM " . File::tableName() . ' WHERE [[id]] = :id';
+        $value = File::getDb()->createCommand($sql . ($forUpdate ? ' FOR UPDATE' : ''), [':id' => $file->id])->queryScalar();
+
+        return is_string($value) ? StreamState::fromArray(json_decode($value, true)) : null;
     }
 
     public function isPlayable(File $file): bool

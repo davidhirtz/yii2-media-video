@@ -153,13 +153,15 @@ class Bootstrap implements ConfigBootstrapInterface
             static fn (File $file) => $file->attachBehavior('FileStreamBehavior', FileStreamBehavior::class)
         );
 
+        // The console builds the webhook URL that `setup` and `webhook` register with the provider.
+        $app->addUrlManagerRules(['video-stream/webhook' => ltrim(StreamManager::WEBHOOK_ROUTE, '/')], true);
+
         if ($app instanceof ConsoleApplication) {
             return;
         }
 
         /** @see StreamWebhookController::actionIndex() */
         $app->controllerMap['video-stream-webhook'] ??= StreamWebhookController::class;
-        $app->addUrlManagerRules(['video-stream/webhook' => ltrim(StreamManager::WEBHOOK_ROUTE, '/')], true);
 
         $app->extendModule('admin', [
             'modules' => [
