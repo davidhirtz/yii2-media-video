@@ -33,6 +33,7 @@ trait StreamVideoTrait
 
         return $video->attribute($attribute, $url)
             ->attribute('data-hls', true)
+            ->attribute('data-fallback', $file->getUrl())
             ->attribute('poster', $manager->getPosterUrl($file));
     }
 }

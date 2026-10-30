@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Hirtz\Media\Video\Test;
 
+use DateTimeImmutable;
 use Hirtz\Media\Models\File;
+use Hirtz\Media\Video\Streaming\ListableStreamProviderInterface;
 use Hirtz\Media\Video\Streaming\ProvisionableStreamProviderInterface;
 use Hirtz\Media\Video\Streaming\StreamState;
 use Hirtz\Media\Video\Streaming\StreamStatus;
@@ -12,7 +14,7 @@ use Override;
 use yii\base\BaseObject;
 use yii\web\Request;
 
-class FakeStreamProvider extends BaseObject implements ProvisionableStreamProviderInterface
+class FakeStreamProvider extends BaseObject implements ListableStreamProviderInterface, ProvisionableStreamProviderInterface
 {
     public string $name = 'fake';
     public string $scope = 'fake-library';
@@ -31,6 +33,11 @@ class FakeStreamProvider extends BaseObject implements ProvisionableStreamProvid
      */
     public ?string $playlistUrl = null;
     public bool $provisioned = true;
+
+    /**
+     * @var array<string, DateTimeImmutable|null> what {@see getVideos()} lists
+     */
+    public array $videos = [];
 
     /**
      * @var list<list<mixed>>
@@ -102,6 +109,13 @@ class FakeStreamProvider extends BaseObject implements ProvisionableStreamProvid
     public function getScope(): string
     {
         return $this->scope;
+    }
+
+    #[Override]
+    public function getVideos(): iterable
+    {
+        $this->calls[] = ['getVideos'];
+        return $this->videos;
     }
 
     #[Override]

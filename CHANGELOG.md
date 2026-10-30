@@ -1,13 +1,7 @@
 ## Unreleased
 
-- Added adaptive video through a streaming provider: the `videoStream` component (`Streaming\StreamManager`), `StreamProviderInterface` and `ProvisionableStreamProviderInterface`
-- Added the `stream` attribute of video files (`StreamCustomAttribute`, `StreamState`, `StreamStatus`)
-- Added the provider webhook `video-stream/webhook` and the commands `video-stream/submit`, `refresh`, `webhook` and `setup` (account key from `VIDEO_STREAM_ACCOUNT_KEY` or a hidden prompt)
-- Added HLS playback to `Widgets\Media` and the admin preview (`HlsAssetBundle`, hls.js)
-- Added the "Resubmit stream" action to the file page (`FileActionDropdown`)
+- Added adaptive video through a streaming provider (`videoStream`, `StreamProviderInterface`, `ProvisionableStreamProviderInterface`, `ListableStreamProviderInterface`, the `stream` attribute, `video-stream/*`, the `video-stream/webhook` endpoint, `HlsAssetBundle`)
 - Added `Test\FakeStreamProvider`
-- Added `StreamManager::isSetUp()`: a provider not provisioned yet wires only `video-stream/setup`
-- Added the provider's scope to a stream (`StreamProviderInterface::getScope()`): a copied installation's streams are submitted again by `video-stream/submit --all`
 
 ## 3.6.0 (October 22, 2026)
 

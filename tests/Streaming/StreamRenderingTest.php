@@ -59,6 +59,7 @@ class StreamRenderingTest extends TestCase
         self::assertStringContainsString("src=\"https://stream.example.com/$state?->id/playlist.m3u8\"", $html);
         self::assertStringContainsString("poster=\"https://stream.example.com/$state?->id/thumbnail.jpg\"", $html);
         self::assertStringContainsString(' data-hls', $html);
+        self::assertStringContainsString('data-fallback="' . $file->getUrl() . '"', $html, 'The local file plays when the stream does not load.');
         self::assertArrayHasKey(HlsAssetBundle::class, Application::current()->getView()->assetBundles);
     }
 

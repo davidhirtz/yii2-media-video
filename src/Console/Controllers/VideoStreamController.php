@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Hirtz\Media\Video\Console\Controllers;
 
+use DateTimeImmutable;
 use Exception;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Models\Queries\FileQuery;
+use Hirtz\Media\Video\Streaming\ListableStreamProviderInterface;
 use Hirtz\Media\Video\Streaming\ProvisionableStreamProviderInterface;
 use Hirtz\Media\Video\Streaming\StreamManager;
 use Hirtz\Media\Video\Streaming\StreamState;
@@ -35,9 +37,19 @@ class VideoStreamController extends Controller
     public bool $all = false;
 
     /**
+     * @var bool whether to submit the videos whose stream failed again
+     */
+    public bool $failed = false;
+
+    /**
      * @var int|null the id of the one video to submit, whatever its state
      */
     public ?int $fileId = null;
+
+    /**
+     * @var bool whether to delete the orphans at the provider
+     */
+    public bool $delete = false;
 
     /**
      * @var string|null the provider account's key, used once and never stored; `VIDEO_STREAM_ACCOUNT_KEY` or asked for when omitted, which keeps it out of the shell history
@@ -60,8 +72,9 @@ class VideoStreamController extends Controller
         $options = [...parent::options($actionID), 'user'];
 
         return match ($actionID) {
-            'submit' => [...$options, 'all', 'fileId'],
+            'submit' => [...$options, 'all', 'failed', 'fileId'],
             'setup' => [...$options, 'accountKey', 'name', 'config'],
+            'orphans' => [...$options, 'delete'],
             default => $options,
         };
     }
@@ -89,7 +102,7 @@ class VideoStreamController extends Controller
     }
 
     /**
-     * Submits the videos left pending; `--all` adds every video without a stream.
+     * Submits the videos left pending; `--failed` adds those that failed, `--all` every video without a stream.
      *
      * @noinspection PhpUnused
      */
@@ -147,6 +160,67 @@ class VideoStreamController extends Controller
         }
 
         $this->stdout("The state of $count videos changed" . PHP_EOL);
+    }
+
+    /**
+     * Lists the videos at the provider no file holds; `--delete` deletes them.
+     *
+     * @noinspection PhpUnused
+     */
+    public function actionOrphans(): int
+    {
+        $manager = StreamManager::getComponent();
+        $provider = $manager->getProvider();
+
+        if (!$provider instanceof ListableStreamProviderInterface) {
+            $this->stderr("The provider \"{$provider->getName()}\" cannot list its videos" . PHP_EOL, Console::FG_RED);
+            return ExitCode::UNAVAILABLE;
+        }
+
+        $held = [];
+
+        /** @var File $file */
+        foreach ($this->findVideos()->each() as $file) {
+            $state = $manager->getState($file);
+
+            if ($state?->id !== null && !$manager->isForeignState($state)) {
+                $held[$state->id] = true;
+            }
+        }
+
+        // The whole list first: a page that failed must not read as videos no file holds.
+        try {
+            $videos = [...$provider->getVideos()];
+        } catch (Exception $exception) {
+            $this->stderr($exception->getMessage() . PHP_EOL, Console::FG_RED);
+            return ExitCode::UNAVAILABLE;
+        }
+
+        // A submit saves the id after the provider created the video, so a recent one may just not be stored yet.
+        $cutoff = new DateTimeImmutable('-1 hour');
+        $orphans = [];
+
+        foreach ($videos as $id => $createdAt) {
+            if (!isset($held[$id]) && ($createdAt === null || $createdAt < $cutoff)) {
+                $orphans[] = (string)$id;
+                $this->stdout("$id" . ($createdAt ? ' (' . $createdAt->format('Y-m-d H:i') . ')' : '') . PHP_EOL);
+            }
+        }
+
+        $count = count($orphans);
+        $this->stdout("$count of " . count($videos) . ' videos at the provider are held by no file' . PHP_EOL);
+
+        if (!$this->delete || !$count || ($this->interactive && !$this->confirm("Delete $count videos at the provider?", false))) {
+            return ExitCode::OK;
+        }
+
+        foreach ($orphans as $id) {
+            $provider->delete(new StreamState($provider->getName(), $id, scope: $provider->getScope()));
+        }
+
+        $this->stdout("$count videos were deleted" . PHP_EOL, Console::FG_GREEN);
+
+        return ExitCode::OK;
     }
 
     /**
@@ -266,7 +340,8 @@ class VideoStreamController extends Controller
             return $this->all;
         }
 
-        return $state->id === null && $state->status === StreamStatus::Pending;
+        return ($state->id === null && $state->status === StreamStatus::Pending)
+            || ($this->failed && $state->status === StreamStatus::Failed);
     }
 
     /**

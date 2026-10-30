@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Media\Video\Tests\Streaming;
 
+use DateTimeImmutable;
 use Hirtz\Media\Models\Actions\DuplicateFile;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Modules\Admin\Widgets\Forms\FileActiveForm;
@@ -224,6 +225,64 @@ class StreamingTest extends TestCase
         self::assertCount(3, $this->getProvider()->getCalls('submit'));
         self::assertSame(StreamStatus::Processing, $this->findState($first)?->status);
         self::assertSame(StreamStatus::Processing, $this->findState($second)?->status);
+    }
+
+    public function testTheConsoleSubmitsFailedVideosAgainOnlyWithFailed(): void
+    {
+        $this->getProvider()->submitStatus = StreamStatus::Failed;
+        $file = $this->insertVideo();
+        $this->getProvider()->submitStatus = StreamStatus::Processing;
+        $this->getProvider()->calls = [];
+
+        $controller = $this->createController();
+        $controller->all = true;
+        $controller->actionSubmit();
+        self::assertSame([], $this->getProvider()->getCalls('submit'));
+
+        $controller->failed = true;
+        self::assertSame(ExitCode::OK, $controller->actionSubmit());
+        self::assertSame(StreamStatus::Processing, $this->findState($file)?->status);
+    }
+
+    public function testOrphansListsOnlyOldVideosNoFileHolds(): void
+    {
+        $held = $this->getState($this->insertVideo())->id ?? self::fail('No id.');
+        $old = new DateTimeImmutable('-2 days');
+
+        $this->getProvider()->videos = [
+            $held => $old,
+            'orphan-old' => $old,
+            'orphan-undated' => null,
+            'just-created' => new DateTimeImmutable('-5 minutes'),
+        ];
+
+        $controller = $this->createController();
+
+        self::assertSame(ExitCode::OK, $controller->actionOrphans());
+        self::assertSame([], $this->getProvider()->getCalls('delete'), 'Listing deletes nothing.');
+
+        $output = $controller->flushStdOutBuffer();
+
+        self::assertStringContainsString('2 of 4 videos at the provider are held by no file', $output);
+        self::assertStringNotContainsString('just-created', $output);
+
+        $controller->delete = true;
+        $controller->interactive = false;
+
+        self::assertSame(ExitCode::OK, $controller->actionOrphans());
+        self::assertSame([['delete', 'orphan-old'], ['delete', 'orphan-undated']], $this->getProvider()->getCalls('delete'));
+    }
+
+    public function testOrphansIgnoresTheVideosAnotherLibraryHolds(): void
+    {
+        $file = $this->insertCopiedVideo();
+        $copied = $this->getState($file)->id ?? self::fail('No id.');
+        $this->getProvider()->videos = [$copied => new DateTimeImmutable('-2 days')];
+
+        $controller = $this->createController();
+        $controller->actionOrphans();
+
+        self::assertStringContainsString('1 of 1 videos at the provider are held by no file', $controller->flushStdOutBuffer(), 'A copied state does not hold a video of this library.');
     }
 
     public function testTheConsoleRefreshesOnlyStreamsInProgress(): void
@@ -478,6 +537,25 @@ class StreamingTest extends TestCase
     /**
      * `setup` and `webhook` register what the console builds, so it must be the URL the web application answers.
      */
+    public function testSetupAndWebhookRegisterTheWebRuleUnderTheConsole(): void
+    {
+        $this->applicationClass = ConsoleApplication::class;
+        $this->config['components']['urlManager']['hostInfo'] = 'https://www.test.localhost';
+        $this->config['components']['urlManager']['baseUrl'] = '';
+        $this->config['components']['videoStream']['provider']['provisioned'] = false;
+        $this->reloadApplication();
+
+        $controller = $this->createController();
+        $controller->config = $this->createParamsFile([]);
+        $controller->accountKey = 'account-key';
+
+        self::assertSame(ExitCode::OK, $controller->actionSetup());
+        self::assertSame('https://www.test.localhost/video-stream/webhook', $this->getProvider()->getCalls('provision')[0][3] ?? null);
+
+        self::assertSame(ExitCode::OK, $controller->actionWebhook());
+        self::assertSame([['registerWebhook', 'https://www.test.localhost/video-stream/webhook']], $this->getProvider()->getCalls('registerWebhook'));
+    }
+
     public function testTheConsoleBuildsTheWebhookUrlOfTheWebRule(): void
     {
         $this->applicationClass = ConsoleApplication::class;

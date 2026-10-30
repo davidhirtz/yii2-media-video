@@ -136,6 +136,9 @@ class Bootstrap implements ConfigBootstrapInterface
             $app->controllerMap['video-stream'] ??= VideoStreamController::class;
         }
 
+        // The console builds the webhook URL `setup` registers, before the provider is set up.
+        $app->addUrlManagerRules(['video-stream/webhook' => ltrim(StreamManager::WEBHOOK_ROUTE, '/')], true);
+
         // A provider bundle configures the component before its scope exists, so `video-stream/setup` can create it.
         if (!StreamManager::getComponent()->isSetUp()) {
             return;
@@ -152,9 +155,6 @@ class Bootstrap implements ConfigBootstrapInterface
             BaseActiveRecord::EVENT_INIT,
             static fn (File $file) => $file->attachBehavior('FileStreamBehavior', FileStreamBehavior::class)
         );
-
-        // The console builds the webhook URL that `setup` and `webhook` register with the provider.
-        $app->addUrlManagerRules(['video-stream/webhook' => ltrim(StreamManager::WEBHOOK_ROUTE, '/')], true);
 
         if ($app instanceof ConsoleApplication) {
             return;
