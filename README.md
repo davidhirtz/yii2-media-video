@@ -117,6 +117,8 @@ component from its params:
   `video-stream/setup --account-key=…` creates the installation's own scope at a provider implementing
   `ProvisionableStreamProviderInterface` and saves its params to `config/params.php` (`--config` for another file);
   an installation already set up is replaced only after an interactive confirmation. All need `urlManager.hostInfo`.
+- A provider implementing `ProvisionableStreamProviderInterface` that is not provisioned yet wires only
+  `video-stream/setup` (`StreamManager::isSetUp()`); every other command refuses to run.
 - The admin plays the stream in the file preview, uses the provider's poster as the grid thumbnail of a video without
   a preview, and offers "Resubmit stream" in the file's action menu.
 - `Test\FakeStreamProvider` records every call and answers configurable states, for tests and a local admin.

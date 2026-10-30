@@ -29,7 +29,7 @@ class FakeStreamProvider extends BaseObject implements ProvisionableStreamProvid
      * `{id}` is replaced.
      */
     public ?string $playlistUrl = null;
-    public bool $provisioned = false;
+    public bool $provisioned = true;
 
     /**
      * @var list<list<mixed>>

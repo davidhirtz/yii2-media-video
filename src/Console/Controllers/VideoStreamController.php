@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Media\Video\Console\Controllers;
 
+use Exception;
 use Hirtz\Media\Models\File;
 use Hirtz\Media\Models\Queries\FileQuery;
 use Hirtz\Media\Video\Streaming\ProvisionableStreamProviderInterface;
@@ -67,6 +68,11 @@ class VideoStreamController extends Controller
     #[Override]
     public function beforeAction($action): bool
     {
+        if ($action->id !== 'setup' && !StreamManager::getComponent()->isSetUp()) {
+            $this->stderr('Streaming is not set up yet, run `video-stream/setup` first' . PHP_EOL, Console::FG_RED);
+            return false;
+        }
+
         return parent::beforeAction($action) && $this->setUserIdentity();
     }
 
@@ -176,7 +182,12 @@ class VideoStreamController extends Controller
             return ExitCode::OK;
         }
 
-        $params = $provider->provision($this->accountKey, $this->name ?? Yii::$app->name, $manager->getWebhookUrl());
+        try {
+            $params = $provider->provision($this->accountKey, $this->name ?? Yii::$app->name, $manager->getWebhookUrl());
+        } catch (Exception $exception) {
+            $this->stderr($exception->getMessage() . PHP_EOL, Console::FG_RED);
+            return ExitCode::UNSPECIFIED_ERROR;
+        }
 
         $this->setConfig($this->config, [
             ...$this->getConfig($this->config),

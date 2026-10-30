@@ -6,6 +6,7 @@
 - Added HLS playback to `Widgets\Media` and the admin preview (`HlsAssetBundle`, hls.js)
 - Added the "Resubmit stream" action to the file page (`FileActionDropdown`)
 - Added `Test\FakeStreamProvider`
+- Added `StreamManager::isSetUp()`: a provider not provisioned yet wires only `video-stream/setup`
 
 ## 3.6.0 (October 22, 2026)
 

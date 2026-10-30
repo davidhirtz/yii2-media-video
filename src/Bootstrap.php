@@ -131,6 +131,16 @@ class Bootstrap implements ConfigBootstrapInterface
      */
     protected function bootstrapStreaming(Application|ConsoleApplication $app): void
     {
+        // Not `getIsConsoleRequest()`, which a web application under the CLI SAPI answers `true` as well
+        if ($app instanceof ConsoleApplication) {
+            $app->controllerMap['video-stream'] ??= VideoStreamController::class;
+        }
+
+        // A provider bundle configures the component before its scope exists, so `video-stream/setup` can create it.
+        if (!StreamManager::getComponent()->isSetUp()) {
+            return;
+        }
+
         EventHelper::on(Module::class, BaseModule::EVENT_INIT, static function (Module $module): void {
             $module->fileCustomAttributes[] = static fn (): array => [
                 StreamCustomAttribute::make(StreamManager::ATTRIBUTE),
@@ -143,9 +153,7 @@ class Bootstrap implements ConfigBootstrapInterface
             static fn (File $file) => $file->attachBehavior('FileStreamBehavior', FileStreamBehavior::class)
         );
 
-        // Not `getIsConsoleRequest()`, which a web application under the CLI SAPI answers `true` as well
         if ($app instanceof ConsoleApplication) {
-            $app->controllerMap['video-stream'] ??= VideoStreamController::class;
             return;
         }
 

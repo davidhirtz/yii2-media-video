@@ -26,6 +26,7 @@ use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
 use Hirtz\Skeleton\Web\ContentSecurityPolicy;
 use Override;
 use Yii;
+use yii\base\InlineAction;
 use yii\console\ExitCode;
 
 class StreamingTest extends TestCase
@@ -67,6 +68,23 @@ class StreamingTest extends TestCase
         self::assertFalse($file->hasAttribute(StreamManager::ATTRIBUTE));
         self::assertArrayNotHasKey('video-stream-webhook', Yii::$app->controllerMap);
         self::assertFalse(Yii::$app->getModule('admin')?->getModule('media')?->createController('stream'));
+    }
+
+    public function testAProviderNotSetUpWiresOnlyTheSetupCommand(): void
+    {
+        $this->config['components']['videoStream']['provider']['provisioned'] = false;
+        $this->applicationClass = ConsoleApplication::class;
+        $this->reloadApplication();
+
+        $file = $this->insertVideo();
+
+        self::assertFalse($file->hasAttribute(StreamManager::ATTRIBUTE));
+        self::assertSame([], $this->getProvider()->calls);
+
+        $controller = $this->createController();
+
+        self::assertFalse($controller->beforeAction(new InlineAction('submit', $controller, 'actionSubmit')));
+        self::assertTrue($controller->beforeAction(new InlineAction('setup', $controller, 'actionSetup')));
     }
 
     public function testAnUploadedVideoIsSubmittedByUrl(): void
@@ -202,6 +220,7 @@ class StreamingTest extends TestCase
     public function testTheSetupCommandSavesTheParams(): void
     {
         $config = $this->createParamsFile(['cookieValidationKey' => 'Grüße 🎬']);
+        $this->getProvider()->provisioned = false;
 
         $controller = $this->createController();
         $controller->config = $config;

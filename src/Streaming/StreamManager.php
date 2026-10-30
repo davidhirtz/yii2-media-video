@@ -46,6 +46,12 @@ class StreamManager extends Component
             : ($this->provider instanceof StreamProviderInterface ? $this->provider : Yii::createObject($this->provider));
     }
 
+    public function isSetUp(): bool
+    {
+        $provider = $this->getProvider();
+        return !$provider instanceof ProvisionableStreamProviderInterface || $provider->isProvisioned();
+    }
+
     public function getState(File $file): ?StreamState
     {
         $state = $file->hasAttribute(self::ATTRIBUTE) ? $file->getAttribute(self::ATTRIBUTE) : null;
