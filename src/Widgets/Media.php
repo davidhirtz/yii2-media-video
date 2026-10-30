@@ -6,12 +6,15 @@ namespace Hirtz\Media\Video\Widgets;
 
 use Closure;
 use Hirtz\Media\Video\Models\CustomAttributes\SubtitlesCustomAttribute;
+use Hirtz\Media\Video\Widgets\Traits\StreamVideoTrait;
 use Hirtz\Skeleton\Html\Video;
 use Override;
 use Stringable;
 
 class Media extends \Hirtz\Media\Widgets\Media
 {
+    use StreamVideoTrait;
+
     protected bool $autoplay = false;
     protected bool $subtitles = true;
     /**
@@ -48,14 +51,18 @@ class Media extends \Hirtz\Media\Widgets\Media
 
     protected function renderVideo(): string|Stringable
     {
+        $attribute = $this->lazyLoading ? 'data-src' : 'src';
+
         $video = Video::make()
-            ->attribute($this->lazyLoading ? 'data-src' : 'src', $this->asset->file->getUrl())
+            ->attribute($attribute, $this->asset->file->getUrl())
             ->autoplay($this->autoplay)
             ->controls(!$this->autoplay)
             ->playsinline($this->autoplay)
             ->loop($this->autoplay)
             ->muted($this->autoplay)
             ->preload(!$this->autoplay ? ($this->lazyLoading ? 'none' : 'auto') : null);
+
+        $this->applyStream($video, $this->asset->file, $attribute);
 
         if ($this->subtitles) {
             $video->content(...SubtitlesCustomAttribute::getFileTracks($this->asset->file));

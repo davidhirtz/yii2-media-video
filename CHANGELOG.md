@@ -1,3 +1,12 @@
+## Unreleased
+
+- Added adaptive video through a streaming provider: the `videoStream` component (`Streaming\StreamManager`), `StreamProviderInterface` and `ProvisionableStreamProviderInterface`
+- Added the `stream` attribute of video files (`StreamCustomAttribute`, `StreamState`, `StreamStatus`)
+- Added the provider webhook `video-stream/webhook` and the commands `video-stream/submit`, `refresh`, `webhook` and `setup`
+- Added HLS playback to `Widgets\Media` and the admin preview (`HlsAssetBundle`, hls.js)
+- Added the "Resubmit stream" action to the file page (`FileActionDropdown`)
+- Added `Test\FakeStreamProvider`
+
 ## 3.6.0 (October 22, 2026)
 
 - Changed the `davidhirtz/yii2-media` requirement to `^3.20` (`Module::$videoExtensions`)

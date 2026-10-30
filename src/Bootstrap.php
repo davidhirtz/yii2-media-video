@@ -8,16 +8,24 @@ use Hirtz\Media\Models\File;
 use Hirtz\Media\Module;
 use Hirtz\Media\Video\Assets\VideoPreviewAssetBundle;
 use Hirtz\Media\Video\Console\Controllers\FileController;
+use Hirtz\Media\Video\Console\Controllers\VideoStreamController;
+use Hirtz\Media\Video\Controllers\StreamWebhookController;
 use Hirtz\Media\Video\Mcp\GetSubtitlesTool;
 use Hirtz\Media\Video\Mcp\SetSubtitlesTool;
+use Hirtz\Media\Video\Models\Behaviors\FileStreamBehavior;
 use Hirtz\Media\Video\Models\Behaviors\FileVideoBehavior;
 use Hirtz\Media\Video\Models\CustomAttributes\DurationCustomAttribute;
+use Hirtz\Media\Video\Models\CustomAttributes\StreamCustomAttribute;
 use Hirtz\Media\Video\Models\CustomAttributes\SubtitlesCustomAttribute;
+use Hirtz\Media\Video\Modules\Admin\Controllers\StreamController;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreviewField;
+use Hirtz\Media\Video\Modules\Admin\Widgets\Navs\FileActionDropdown;
 use Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns\Thumbnail;
+use Hirtz\Media\Video\Streaming\StreamManager;
 use Hirtz\Media\Video\Widgets\Media;
 use Hirtz\Skeleton\Base\ConfigBootstrapInterface;
 use Hirtz\Skeleton\Base\Module as BaseModule;
+use Hirtz\Skeleton\Console\Application as ConsoleApplication;
 use Hirtz\Skeleton\Helpers\EventHelper;
 use Hirtz\Skeleton\Mcp\Mcp;
 use Hirtz\Skeleton\Web\Application;
@@ -66,6 +74,7 @@ class Bootstrap implements ConfigBootstrapInterface
                     \Hirtz\Media\Console\Controllers\FileController::class => FileController::class,
                     \Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField::class => FilePreviewField::class,
                     \Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail::class => Thumbnail::class,
+                    \Hirtz\Media\Modules\Admin\Widgets\Navs\FileActionDropdown::class => FileActionDropdown::class,
                     \Hirtz\Media\Widgets\Media::class => Media::class,
                 ],
             ],
@@ -76,7 +85,7 @@ class Bootstrap implements ConfigBootstrapInterface
     public array $allowedVideoExtensions = ['mp4', 'webm', 'ogg'];
 
     /**
-     * @param Application<\Hirtz\Skeleton\Models\User> $app
+     * @param Application<\Hirtz\Skeleton\Models\User>|ConsoleApplication $app
      */
     public function bootstrap($app): void
     {
@@ -111,5 +120,51 @@ class Bootstrap implements ConfigBootstrapInterface
             BaseActiveRecord::EVENT_INIT,
             static fn (File $file) => $file->attachBehavior('FileVideoBehavior', FileVideoBehavior::class)
         );
+
+        if ($app->has('videoStream')) {
+            $this->bootstrapStreaming($app);
+        }
+    }
+
+    /**
+     * @param Application<\Hirtz\Skeleton\Models\User>|ConsoleApplication $app
+     */
+    protected function bootstrapStreaming(Application|ConsoleApplication $app): void
+    {
+        EventHelper::on(Module::class, BaseModule::EVENT_INIT, static function (Module $module): void {
+            $module->fileCustomAttributes[] = static fn (): array => [
+                StreamCustomAttribute::make(StreamManager::ATTRIBUTE),
+            ];
+        });
+
+        EventHelper::on(
+            File::class,
+            BaseActiveRecord::EVENT_INIT,
+            static fn (File $file) => $file->attachBehavior('FileStreamBehavior', FileStreamBehavior::class)
+        );
+
+        // Not `getIsConsoleRequest()`, which a web application under the CLI SAPI answers `true` as well
+        if ($app instanceof ConsoleApplication) {
+            $app->controllerMap['video-stream'] ??= VideoStreamController::class;
+            return;
+        }
+
+        /** @see StreamWebhookController::actionIndex() */
+        $app->controllerMap['video-stream-webhook'] ??= StreamWebhookController::class;
+        $app->addUrlManagerRules(['video-stream/webhook' => ltrim(StreamManager::WEBHOOK_ROUTE, '/')], true);
+
+        $app->extendModule('admin', [
+            'modules' => [
+                'media' => [
+                    'controllerMap' => [
+                        'stream' => StreamController::class,
+                    ],
+                ],
+            ],
+        ]);
+
+        $app->on(Application::EVENT_BEFORE_REQUEST, static function (): void {
+            StreamManager::getComponent()->registerContentSecurityPolicy(Application::current()->getContentSecurityPolicy());
+        });
     }
 }

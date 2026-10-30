@@ -58,6 +58,7 @@ for one of them wins:
 | `Hirtz\Media\Modules\Admin\Widgets\Forms\Fields\FilePreviewField` | `Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\FilePreviewField` |
 | `Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbnail`       | `Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns\Thumbnail`    |
 | `Hirtz\Media\Console\Controllers\FileController`                 | `Hirtz\Media\Video\Console\Controllers\FileController`              |
+| `Hirtz\Media\Modules\Admin\Widgets\Navs\FileActionDropdown`      | `Hirtz\Media\Video\Modules\Admin\Widgets\Navs\FileActionDropdown`   |
 
 A project with a subclass of its own extends the video class instead, or declares its own definition in
 `container.definitions` and takes over the video handling itself.
@@ -80,6 +81,51 @@ Every video file has a read-only `duration` attribute (`Models\CustomAttributes\
 seconds, read from the upload by getID3 and shown as `H:MM:SS` in the admin; agents read it through `get_record`.
 Videos stored before the bundle read it get it from `./yii file/duration`.
 
+### Streaming
+
+Adaptive video (HLS) comes from an external provider through the `videoStream` component
+(`Streaming\StreamManager`). Without it nothing changes; with it every video is submitted to the provider after its
+upload and played from the provider's playlist once encoded, the local file staying the master copy and the fallback.
+A provider is a class implementing `Streaming\StreamProviderInterface`, usually its own bundle that configures the
+component from its params:
+
+```php
+'components' => [
+    'videoStream' => [
+        'class' => \Hirtz\Media\Video\Streaming\StreamManager::class,
+        'provider' => ['class' => \Vendor\StreamProvider::class],
+    ],
+],
+```
+
+| Property         | Default | Meaning                                                                                    |
+|------------------|---------|--------------------------------------------------------------------------------------------|
+| `provider`       |         | The provider: an instance, a class name, a configuration array or a closure answering one   |
+| `submitByUrl`    | `true`  | The provider fetches the file by its URL; `false` leaves an upload pending for the console |
+| `webhookEnabled` | `true`  | Passes the webhook URL to the provider; `false` where none reaches the installation        |
+
+- The state is the read-only `stream` attribute of every video file (`Models\CustomAttributes\StreamCustomAttribute`):
+  provider, remote id, status (`pending`, `processing`, `ready`, `failed`) and error. The admin shows the status,
+  agents read it through `get_record`.
+- A replaced upload deletes the old remote video and submits the new one; deleting the file deletes its remote
+  video; a duplicate gets a remote video of its own. A failing provider fails the stream, never the upload.
+- The provider calls `POST /video-stream/webhook` (no CSRF, no session, always `204`); the payload only names the
+  video, whose state is then fetched from the provider.
+- Console: `video-stream/submit` uploads the videos left pending (`--all` adds every video without a stream,
+  `--file-id` resubmits one), `video-stream/refresh` fetches the state of every video still pending or processing (for
+  an installation no webhook reaches), `video-stream/webhook` registers the webhook URL with the provider, and
+  `video-stream/setup --account-key=…` creates the installation's own scope at a provider implementing
+  `ProvisionableStreamProviderInterface` and prints its params. All need `urlManager.hostInfo`.
+- The admin plays the stream in the file preview, uses the provider's poster as the grid thumbnail of a video without
+  a preview, and offers "Resubmit stream" in the file's action menu.
+- `Test\FakeStreamProvider` records every call and answers configurable states, for tests and a local admin.
+
+`Widgets\Media` writes the playlist to `src` (or `data-src`) with a `data-hls` attribute and the provider's poster
+once the stream is ready, and registers `Assets\HlsAssetBundle`: Safari plays the playlist natively, every other
+browser through hls.js as soon as `src` is set, whoever sets it. The admin's content security policy admits the
+provider's hosts where it restricts `media-src`, `connect-src` or `img-src`; a frontend policy restricting them adds
+the hosts the provider's `getContentSecurityPolicy()` answers to all three, plus `blob:` to `media-src`.
+
 ## Rendering a video
 
 `Widgets\Media` renders a `<video>` for an asset whose file answers `isVideo()` and falls back to the media
@@ -101,7 +147,7 @@ echo Media::make()
 - `subtitles(false)` leaves out the `<track>` the widget otherwise adds for each language whose subtitles are
   stored, labelled with the language's own name, `default` on the application language's.
 - `video(Closure)` is handed the `Hirtz\Skeleton\Html\Video` tag before it renders, for a class or any other
-  attribute the widget does not set itself.
+  attribute the widget does not set itself, a `poster` over the stream's included.
 
 ## Admin
 
