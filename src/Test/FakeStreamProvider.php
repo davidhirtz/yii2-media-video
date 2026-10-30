@@ -106,6 +106,18 @@ class FakeStreamProvider extends BaseObject implements ListableStreamProviderInt
     }
 
     #[Override]
+    public function getLabel(): string
+    {
+        return 'Fake Stream';
+    }
+
+    #[Override]
+    public function getDashboardUrl(StreamState $state): ?string
+    {
+        return $state->id !== null ? "$this->host/dashboard/$state->id" : null;
+    }
+
+    #[Override]
     public function getScope(): string
     {
         return $this->scope;

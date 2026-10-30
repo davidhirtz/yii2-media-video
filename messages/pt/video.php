@@ -6,8 +6,10 @@
  */
 return [
     'FILE_DURATION_LABEL' => 'Duração',
+    'FILE_STREAM_DASHBOARD_TOOLTIP' => 'Abrir em {provider}',
     'FILE_STREAM_ERROR_FORMAT' => '{status}: {error}',
     'FILE_STREAM_LABEL' => 'Streaming',
+    'FILE_STREAM_READY_TEXT' => 'Pronto desde {date}',
     'FILE_STREAM_RESUBMIT_BUTTON' => 'Reenviar para streaming',
     'FILE_STREAM_RESUBMIT_CONFIRM' => 'Enviar o vídeo novamente ao serviço de streaming?',
     'FILE_STREAM_RESUBMIT_SUCCESS' => 'O vídeo foi enviado ao serviço de streaming.',
@@ -16,6 +18,7 @@ return [
     'FILE_STREAM_STATUS_PENDING_LABEL' => 'Pendente',
     'FILE_STREAM_STATUS_PROCESSING_LABEL' => 'Em processamento',
     'FILE_STREAM_STATUS_READY_LABEL' => 'Pronto',
+    'FILE_STREAM_SUBMITTED_TEXT' => 'Enviado em {date}',
     'FILE_SUBTITLES_LABEL' => 'Legendas',
     'FILE_SUBTITLES_WEBVTT_ERROR' => 'O ficheiro não é um ficheiro WebVTT: deve começar por “WEBVTT”.',
 ];

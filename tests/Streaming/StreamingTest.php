@@ -658,12 +658,12 @@ class StreamingTest extends TestCase
         self::assertNull($this->getManager()->findFile('"' . $id));
     }
 
-    public function testTheFormShowsTheStatusAsText(): void
+    public function testTheFormShowsTheStatusAsABadge(): void
     {
         $file = $this->insertVideo();
         $html = (string)FileActiveForm::make()->model($file);
 
-        self::assertMatchesRegularExpression('#<div class="label">Stream</div>.*?<div class="form-text">Processing</div>#s', $html);
+        self::assertMatchesRegularExpression('#<div class="label">Stream</div>.*?<div class="form-text"><div><span class="badge badge-info">.*?<span>Processing</span>#s', $html);
     }
 
     public function testAgentsReadTheStateButCannotWriteIt(): void

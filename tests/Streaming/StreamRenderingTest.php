@@ -167,6 +167,53 @@ class StreamRenderingTest extends TestCase
         self::assertSame([['delete', $old]], $this->getProvider()->getCalls('delete'));
     }
 
+    public function testTheFileGridShowsTheStreamStatus(): void
+    {
+        $ready = $this->insertReadyVideo();
+        $this->getProvider()->submitStatus = StreamStatus::Failed;
+        $this->getProvider()->error = '<b>Ошибка</b> 🎬';
+        $failed = $this->insertVideo('failed');
+
+        $this->loginAdmin();
+        $this->open('/admin/media/file/index');
+
+        self::assertSelectorExists("#file-{$ready->id} .thumbnail-video .badge-success [title=\"Stream: Ready\"]");
+        self::assertSelectorExists("#file-{$failed->id} .thumbnail-video .badge-error [title=\"Stream: Failed: <b>Ошибка</b> 🎬\"]");
+    }
+
+    public function testTheFilePageDetailsTheStreamAndLinksTheProvider(): void
+    {
+        $file = $this->insertReadyVideo();
+        $id = StreamManager::getComponent()->getState($file)->id ?? self::fail('No id.');
+
+        $this->loginAdmin();
+        $this->open("/admin/media/file/update?id=$file->id");
+
+        self::assertSelectorTextContains('#file-stream-row .badge-success', 'Ready');
+        self::assertSelectorTextContains('#file-stream-row', "Fake Stream · $id");
+        self::assertSelectorTextContains('#file-stream-row', 'Submitted ');
+        self::assertSelectorTextContains('#file-stream-row', 'Ready since ');
+        self::assertSelectorExists("#file-stream-row a[href=\"https://stream.example.com/dashboard/$id\"][target=\"_blank\"][rel=\"noopener\"][title=\"Open at Fake Stream\"]");
+    }
+
+    public function testTheFilePageEncodesAProvidersErrorAndLinksNoForeignVideo(): void
+    {
+        $this->getProvider()->submitStatus = StreamStatus::Failed;
+        $this->getProvider()->error = '<script>alert(1)</script> Mu' . "\u{308}" . 'ller';
+        $file = $this->insertVideo();
+
+        $this->getProvider()->scope = 'another-library';
+
+        $this->loginAdmin();
+        $this->open("/admin/media/file/update?id=$file->id");
+
+        $html = (string)self::$client->getResponse()->getContent();
+
+        self::assertStringNotContainsString('<script>alert(1)</script>', $html);
+        self::assertSelectorTextContains('#file-stream-row .badge-warning', 'Streamed by another installation');
+        self::assertSelectorNotExists('#file-stream-row a');
+    }
+
     public function testAPlayableStreamOffersNoResubmit(): void
     {
         $file = $this->insertReadyVideo();
@@ -226,6 +273,13 @@ class StreamRenderingTest extends TestCase
 
         self::assertResponseIsSuccessful();
         self::assertAnySelectorTextNotContains('.dropdown-item .btn', 'Resubmit stream');
+    }
+
+    private function loginAdmin(): void
+    {
+        $user = $this->getUserFromFixture('admin');
+        $this->assignAdminRole($user->id);
+        $this->getWebUser()->login($user);
     }
 
     private function postResubmit(File $file): void

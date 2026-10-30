@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hirtz\Media\Video\Modules\Admin\Widgets\Grids\Columns;
 
+use Hirtz\Media\Video\Modules\Admin\Widgets\StreamStatusBadge;
 use Hirtz\Media\Video\Streaming\StreamManager;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Html\Img;
@@ -40,10 +41,22 @@ class Thumbnail extends \Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbna
                 ->playsinline(),
         };
 
+        $badge = (string)StreamStatusBadge::make()
+            ->file($this->file)
+            ->label(false);
+
         return Div::make()
             ->class('thumbnail thumbnail-video')
-            ->content($thumbnail, Span::make()
-                ->class('thumbnail-play')
-                ->content(Icon::make()->name('play')));
+            ->content(
+                $thumbnail,
+                Span::make()
+                    ->class('thumbnail-play')
+                    ->content(Icon::make()->name('play')),
+                // Top right, since an asset grid wrapping this thumbnail puts its own badges top left.
+                $badge !== '' ? Div::make()
+                    ->class('thumbnail-badges')
+                    ->addStyle(['left' => 'auto', 'right' => '.3125rem'])
+                    ->content($badge) : null,
+            );
     }
 }

@@ -6,8 +6,10 @@
  */
 return [
     'FILE_DURATION_LABEL' => 'Dauer',
+    'FILE_STREAM_DASHBOARD_TOOLTIP' => 'Bei {provider} öffnen',
     'FILE_STREAM_ERROR_FORMAT' => '{status}: {error}',
     'FILE_STREAM_LABEL' => 'Stream',
+    'FILE_STREAM_READY_TEXT' => 'Bereit seit {date}',
     'FILE_STREAM_RESUBMIT_BUTTON' => 'Stream neu erstellen',
     'FILE_STREAM_RESUBMIT_CONFIRM' => 'Das Video erneut an den Streaming-Anbieter senden?',
     'FILE_STREAM_RESUBMIT_SUCCESS' => 'Das Video wurde an den Streaming-Anbieter gesendet.',
@@ -16,6 +18,7 @@ return [
     'FILE_STREAM_STATUS_PENDING_LABEL' => 'Wartet',
     'FILE_STREAM_STATUS_PROCESSING_LABEL' => 'Wird verarbeitet',
     'FILE_STREAM_STATUS_READY_LABEL' => 'Bereit',
+    'FILE_STREAM_SUBMITTED_TEXT' => 'Gesendet am {date}',
     'FILE_SUBTITLES_LABEL' => 'Untertitel',
     'FILE_SUBTITLES_WEBVTT_ERROR' => 'Die Datei ist keine WebVTT-Datei: Sie muss mit „WEBVTT“ beginnen.',
 ];

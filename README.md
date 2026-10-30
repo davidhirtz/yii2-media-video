@@ -133,6 +133,9 @@ component from its params:
   `video-stream/submit --all` streams them again in this installation's scope (`setup` says so when it finds any). A
   provider cannot copy videos between scopes, so the local files must still exist: never delete the originals on an
   installation that is copied.
+- The file grid's thumbnail carries the stream's status as a badge (`Modules\Admin\Widgets\StreamStatusBadge`), and the
+  file page shows the status, the provider with the video linked to its backend (`getDashboardUrl()`), and when it was
+  submitted and turned ready.
 - The admin plays the stream in the file preview, uses the provider's poster as the grid thumbnail of a video without
   a preview, and offers "Resubmit stream" in the file's action menu for a stream that is not playable (failed, pending,
   processing or another installation's): a playable one would play the local file until the new one is ready.

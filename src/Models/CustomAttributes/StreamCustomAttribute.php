@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace Hirtz\Media\Video\Models\CustomAttributes;
 
 use Hirtz\Media\Models\File;
+use Hirtz\Media\Video\Modules\Admin\Widgets\Forms\Fields\StreamField;
+use Hirtz\Media\Video\Modules\Admin\Widgets\StreamStatusBadge;
 use Hirtz\Media\Video\Streaming\StreamManager;
 use Hirtz\Media\Video\Streaming\StreamState;
+use Hirtz\Skeleton\Html\A;
+use Hirtz\Skeleton\Html\Div;
+use Hirtz\Skeleton\Html\Span;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
 use Hirtz\Skeleton\Widgets\Forms\Fields\Field;
 use Hirtz\Skeleton\Widgets\Forms\Fields\FormTextField;
@@ -38,8 +43,75 @@ class StreamCustomAttribute extends CustomAttribute
     #[Override]
     public function createField(Model $owner): Field
     {
+        if ($owner instanceof File) {
+            return $this->configureField(StreamField::make()->content($this->renderDetails($owner)), $owner);
+        }
+
         $value = $this->formatValue($owner, $owner->{$this->name});
         return $this->configureField(FormTextField::make()->content(is_array($value) ? null : $value), $owner);
+    }
+
+    /**
+     * Always plain text, and richer than the formatted value the parent renders for one.
+     */
+    #[Override]
+    public function getField(Model $owner): Field
+    {
+        return $this->createField($owner);
+    }
+
+    /**
+     * Another installation's video is neither named nor linked: it lives in a scope this one has no account for.
+     */
+    protected function renderDetails(File $file): ?Stringable
+    {
+        if (!Yii::$app->has('videoStream')) {
+            return null;
+        }
+
+        $manager = StreamManager::getComponent();
+        $state = $manager->getState($file);
+
+        if ($state === null) {
+            return null;
+        }
+
+        $provider = $manager->getProvider();
+        $formatter = Yii::$app->getFormatter();
+        $details = [];
+
+        if ($state->id !== null && !$manager->isForeignState($state)) {
+            $url = $provider->getDashboardUrl($state);
+
+            $details[] = Div::make()->content(
+                Span::make()->text($provider->getLabel() . ' · '),
+                $url !== null
+                    ? A::make()
+                        ->href($url)
+                        ->target('_blank')
+                        ->attribute('rel', 'noopener')
+                        ->attribute('title', Yii::t('video', 'FILE_STREAM_DASHBOARD_TOOLTIP', ['provider' => $provider->getLabel()]))
+                        ->text($state->id)
+                    : Span::make()->text($state->id),
+            );
+        }
+
+        $details[] = Div::make()->text(Yii::t('video', 'FILE_STREAM_SUBMITTED_TEXT', [
+            'date' => $formatter->asDatetime($state->submittedAt, 'short'),
+        ]));
+
+        if ($state->readyAt !== null) {
+            $details[] = Div::make()->text(Yii::t('video', 'FILE_STREAM_READY_TEXT', [
+                'date' => $formatter->asDatetime($state->readyAt, 'short'),
+            ]));
+        }
+
+        return Div::make()->content(
+            StreamStatusBadge::make()->file($file),
+            Div::make()
+                ->class('small text-muted')
+                ->content(...$details),
+        );
     }
 
     #[Override]
