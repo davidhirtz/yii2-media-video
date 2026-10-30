@@ -663,7 +663,7 @@ class StreamingTest extends TestCase
         $file = $this->insertVideo();
         $html = (string)FileActiveForm::make()->model($file);
 
-        self::assertMatchesRegularExpression('#<div class="label">Stream</div>.*?<div class="form-text"><div><span class="badge badge-info">.*?<span>Processing</span>#s', $html);
+        self::assertMatchesRegularExpression('#<div class="label">Stream</div>.*?<div class="form-content"><div><span class="badge badge-info">.*?<span>Processing</span>#s', $html);
     }
 
     public function testAgentsReadTheStateButCannotWriteIt(): void

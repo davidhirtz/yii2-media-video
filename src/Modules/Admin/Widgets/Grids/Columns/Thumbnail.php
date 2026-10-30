@@ -24,39 +24,51 @@ class Thumbnail extends \Hirtz\Media\Modules\Admin\Widgets\Grids\Columns\Thumbna
             return parent::renderContent();
         }
 
+        return Div::make()
+            ->class('thumbnail thumbnail-video')
+            ->content(
+                $this->renderImage(),
+                Span::make()
+                    ->class('thumbnail-play')
+                    ->content(Icon::make()->name('play')),
+                $this->renderBadges(),
+            );
+    }
+
+    #[Override]
+    protected function renderImage(): string|Stringable
+    {
+        if (!$this->file->isVideo() || $this->file->getPreviewUrl() !== null) {
+            return parent::renderImage();
+        }
+
         $posterUrl = Yii::$app->has('videoStream') ? StreamManager::getComponent()->getPosterUrl($this->file) : null;
 
         // Without a preview the browser draws a frame itself, fetching little more than the video's header.
-        $thumbnail = match (true) {
-            $this->file->getPreviewUrl() !== null => parent::renderContent(),
-            $posterUrl !== null => Img::make()
+        return $posterUrl !== null
+            ? Img::make()
                 ->src($posterUrl)
                 ->class('img-thumbnail')
-                ->loading('lazy'),
-            default => Video::make()
+                ->loading('lazy')
+            : Video::make()
                 ->class('img-thumbnail')
                 ->attribute('src', $this->file->getUrl() . '#t=1')
                 ->preload('metadata')
                 ->muted()
-                ->playsinline(),
-        };
+                ->playsinline();
+    }
 
-        $badge = (string)StreamStatusBadge::make()
-            ->file($this->file)
-            ->label(false);
+    #[Override]
+    protected function getBadges(): array
+    {
+        $badges = parent::getBadges();
 
-        return Div::make()
-            ->class('thumbnail thumbnail-video')
-            ->content(
-                $thumbnail,
-                Span::make()
-                    ->class('thumbnail-play')
-                    ->content(Icon::make()->name('play')),
-                // Top right, since an asset grid wrapping this thumbnail puts its own badges top left.
-                $badge !== '' ? Div::make()
-                    ->class('thumbnail-badges')
-                    ->addStyle(['left' => 'auto', 'right' => '.3125rem'])
-                    ->content($badge) : null,
-            );
+        if (Yii::$app->has('videoStream') && StreamManager::getComponent()->getState($this->file) !== null) {
+            $badges[] = StreamStatusBadge::make()
+                ->file($this->file)
+                ->label(false);
+        }
+
+        return $badges;
     }
 }

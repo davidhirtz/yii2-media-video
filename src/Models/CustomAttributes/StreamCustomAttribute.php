@@ -10,6 +10,7 @@ use Hirtz\Media\Video\Modules\Admin\Widgets\StreamStatusBadge;
 use Hirtz\Media\Video\Streaming\StreamManager;
 use Hirtz\Media\Video\Streaming\StreamState;
 use Hirtz\Skeleton\Html\A;
+use Hirtz\Skeleton\Html\Custom\RelativeTime;
 use Hirtz\Skeleton\Html\Div;
 use Hirtz\Skeleton\Html\Span;
 use Hirtz\Skeleton\Models\CustomAttributes\CustomAttribute;
@@ -44,7 +45,7 @@ class StreamCustomAttribute extends CustomAttribute
     public function createField(Model $owner): Field
     {
         if ($owner instanceof File) {
-            return $this->configureField(StreamField::make()->content($this->renderDetails($owner)), $owner);
+            return $this->configureField(StreamField::make()->items(...$this->renderDetails($owner)), $owner);
         }
 
         $value = $this->formatValue($owner, $owner->{$this->name});
@@ -62,22 +63,23 @@ class StreamCustomAttribute extends CustomAttribute
 
     /**
      * Another installation's video is neither named nor linked: it lives in a scope this one has no account for.
+     *
+     * @return list<Stringable>
      */
-    protected function renderDetails(File $file): ?Stringable
+    protected function renderDetails(File $file): array
     {
         if (!Yii::$app->has('videoStream')) {
-            return null;
+            return [];
         }
 
         $manager = StreamManager::getComponent();
         $state = $manager->getState($file);
 
         if ($state === null) {
-            return null;
+            return [];
         }
 
         $provider = $manager->getProvider();
-        $formatter = Yii::$app->getFormatter();
         $details = [];
 
         if ($state->id !== null && !$manager->isForeignState($state)) {
@@ -96,22 +98,22 @@ class StreamCustomAttribute extends CustomAttribute
             );
         }
 
-        $details[] = Div::make()->text(Yii::t('video', 'FILE_STREAM_SUBMITTED_TEXT', [
-            'date' => $formatter->asDatetime($state->submittedAt, 'short'),
+        $details[] = Div::make()->content(Yii::t('video', 'FILE_STREAM_SUBMITTED_TEXT', [
+            'timestamp' => RelativeTime::make()->value($state->submittedAt),
         ]));
 
         if ($state->readyAt !== null) {
-            $details[] = Div::make()->text(Yii::t('video', 'FILE_STREAM_READY_TEXT', [
-                'date' => $formatter->asDatetime($state->readyAt, 'short'),
+            $details[] = Div::make()->content(Yii::t('video', 'FILE_STREAM_READY_TEXT', [
+                'timestamp' => RelativeTime::make()->value($state->readyAt),
             ]));
         }
 
-        return Div::make()->content(
-            StreamStatusBadge::make()->file($file),
+        return [
+            Div::make()->content(StreamStatusBadge::make()->file($file)),
             Div::make()
                 ->class('small text-muted')
                 ->content(...$details),
-        );
+        ];
     }
 
     #[Override]

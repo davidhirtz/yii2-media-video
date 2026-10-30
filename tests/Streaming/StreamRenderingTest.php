@@ -16,6 +16,7 @@ use Hirtz\Media\Video\Streaming\StreamStatus;
 use Hirtz\Media\Video\Test\FakeStreamProvider;
 use Hirtz\Media\Video\Widgets\Media;
 use Hirtz\Skeleton\Helpers\FileHelper;
+use Hirtz\Skeleton\Html\Span;
 use Hirtz\Skeleton\Test\Browser;
 use Hirtz\Skeleton\Test\Traits\FunctionalTestTrait;
 use Hirtz\Skeleton\Test\Traits\UserFixtureTrait;
@@ -177,8 +178,20 @@ class StreamRenderingTest extends TestCase
         $this->loginAdmin();
         $this->open('/admin/media/file/index');
 
-        self::assertSelectorExists("#file-{$ready->id} .thumbnail-video .badge-success [title=\"Stream: Ready\"]");
+        self::assertSelectorExists("#file-{$ready->id} .thumbnail-video > .thumbnail-badges > .badge-success [title=\"Stream: Ready\"]");
         self::assertSelectorExists("#file-{$failed->id} .thumbnail-video .badge-error [title=\"Stream: Failed: <b>Ошибка</b> 🎬\"]");
+    }
+
+    public function testTheStreamBadgeJoinsTheThumbnailsBadges(): void
+    {
+        $file = $this->insertReadyVideo();
+
+        $html = (string)Thumbnail::make()
+            ->file($file)
+            ->badges(Span::make()->class('badge badge-type'));
+
+        self::assertSame(1, substr_count($html, 'thumbnail-badges'));
+        self::assertMatchesRegularExpression('#<div class="thumbnail-badges"><span class="badge badge-type"></span><span class="badge badge-success">#', $html);
     }
 
     public function testTheFilePageDetailsTheStreamAndLinksTheProvider(): void
@@ -189,10 +202,10 @@ class StreamRenderingTest extends TestCase
         $this->loginAdmin();
         $this->open("/admin/media/file/update?id=$file->id");
 
-        self::assertSelectorTextContains('#file-stream-row .badge-success', 'Ready');
-        self::assertSelectorTextContains('#file-stream-row', "Fake Stream · $id");
+        self::assertSelectorTextContains('#file-stream-row .form-content > div > .badge-success', 'Ready');
+        self::assertSelectorTextContains('#file-stream-row .form-content > .text-muted', "Fake Stream · $id");
+        self::assertSame(2, self::$crawler->filter('#file-stream-row x-timeago[date]')->count());
         self::assertSelectorTextContains('#file-stream-row', 'Submitted ');
-        self::assertSelectorTextContains('#file-stream-row', 'Ready since ');
         self::assertSelectorExists("#file-stream-row a[href=\"https://stream.example.com/dashboard/$id\"][target=\"_blank\"][rel=\"noopener\"][title=\"Open at Fake Stream\"]");
     }
 
