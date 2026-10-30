@@ -66,6 +66,10 @@ class StreamCustomAttribute extends CustomAttribute
             return null;
         }
 
+        if (Yii::$app->has('videoStream') && StreamManager::getComponent()->isForeignState($state)) {
+            return Yii::t('video', 'FILE_STREAM_STATUS_FOREIGN_LABEL');
+        }
+
         $status = $state->status->getLabel();
 
         return $state->error !== null

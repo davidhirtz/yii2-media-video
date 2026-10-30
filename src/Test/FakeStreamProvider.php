@@ -15,6 +15,7 @@ use yii\web\Request;
 class FakeStreamProvider extends BaseObject implements ProvisionableStreamProviderInterface
 {
     public string $name = 'fake';
+    public string $scope = 'fake-library';
     public string $host = 'https://stream.example.com';
     public StreamStatus $submitStatus = StreamStatus::Processing;
 
@@ -95,6 +96,12 @@ class FakeStreamProvider extends BaseObject implements ProvisionableStreamProvid
     public function getContentSecurityPolicy(): array
     {
         return [$this->host];
+    }
+
+    #[Override]
+    public function getScope(): string
+    {
+        return $this->scope;
     }
 
     #[Override]

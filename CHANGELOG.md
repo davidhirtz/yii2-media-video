@@ -7,6 +7,7 @@
 - Added the "Resubmit stream" action to the file page (`FileActionDropdown`)
 - Added `Test\FakeStreamProvider`
 - Added `StreamManager::isSetUp()`: a provider not provisioned yet wires only `video-stream/setup`
+- Added the provider's scope to a stream (`StreamProviderInterface::getScope()`): a copied installation's streams are submitted again by `video-stream/submit --all`
 
 ## 3.6.0 (October 22, 2026)
 

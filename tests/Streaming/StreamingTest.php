@@ -10,6 +10,7 @@ use Hirtz\Media\Modules\Admin\Widgets\Forms\FileActiveForm;
 use Hirtz\Media\Test\TestCase;
 use Hirtz\Media\Test\Traits\MediaFileTrait;
 use Hirtz\Media\Video\Console\Controllers\VideoStreamController;
+use Hirtz\Media\Video\Models\CustomAttributes\StreamCustomAttribute;
 use Hirtz\Media\Video\Streaming\StreamManager;
 use Hirtz\Media\Video\Streaming\StreamState;
 use Hirtz\Media\Video\Streaming\StreamStatus;
@@ -248,6 +249,81 @@ class StreamingTest extends TestCase
         self::assertSame(ExitCode::OK, $controller->actionSetup());
         self::assertSame([], $this->getProvider()->getCalls('provision'));
         self::assertSame(['fakeLibraryId' => '7'], require Yii::getAlias($config));
+    }
+
+    public function testASubmittedStateCarriesTheProvidersScope(): void
+    {
+        self::assertSame('fake-library', $this->getState(File::findOne($this->insertVideo()->id))->scope);
+
+        StreamManager::getComponent()->submitByUrl = false;
+        self::assertSame('fake-library', $this->getState(File::findOne($this->insertVideo('pending')->id))->scope);
+    }
+
+    public function testAStateCopiedFromAnotherInstallationIsNeitherPlayedNorFetchedNorDeleted(): void
+    {
+        $file = $this->insertCopiedVideo();
+        $manager = $this->getManager();
+
+        self::assertTrue($manager->isForeignState($this->getState($file)));
+        self::assertFalse($manager->isPlayable($file));
+        self::assertNull($manager->getPlaylistUrl($file));
+        self::assertNull($manager->getPosterUrl($file));
+
+        $manager->refresh($file);
+        $manager->deleteRemote($file);
+
+        self::assertSame([], $this->getProvider()->getCalls('fetchState'));
+        self::assertSame([], $this->getProvider()->getCalls('delete'));
+        self::assertNull($manager->findFile((string)$this->getState($file)->id));
+        self::assertSame(Yii::t('video', 'FILE_STREAM_STATUS_FOREIGN_LABEL'), StreamCustomAttribute::make(StreamManager::ATTRIBUTE)->formatValue($file, $this->getState($file)));
+    }
+
+    public function testSubmitAllStreamsTheVideosOfACopiedInstallationAgain(): void
+    {
+        $file = $this->insertCopiedVideo();
+        $copied = $this->getState($file)->id;
+
+        $controller = $this->createController();
+        $controller->actionSubmit();
+        self::assertSame([], $this->getProvider()->getCalls('submit'));
+
+        $controller->all = true;
+        $controller->actionSubmit();
+
+        $state = $this->getState(File::findOne($file->id));
+
+        self::assertCount(1, $this->getProvider()->getCalls('submit'));
+        self::assertSame([], $this->getProvider()->getCalls('delete'), 'The copied video belongs to the other library.');
+        self::assertNotSame($copied, $state->id);
+        self::assertSame('production-library', $state->scope);
+        self::assertFalse($this->getManager()->isForeignState($state));
+    }
+
+    public function testTheSetupCommandNamesTheVideosOfACopiedInstallation(): void
+    {
+        $this->insertCopiedVideo('Grüße 🎬');
+        $this->getProvider()->provisioned = false;
+
+        $controller = $this->createController();
+        $controller->config = $this->createParamsFile([]);
+        $controller->accountKey = 'account-key';
+
+        self::assertSame(ExitCode::OK, $controller->actionSetup());
+        self::assertStringContainsString('1 videos were streamed by another installation, run `video-stream/submit --all`', $controller->flushStdOutBuffer());
+    }
+
+    /**
+     * Ready in the stage library, then seen from production, whose library is another.
+     */
+    private function insertCopiedVideo(string $name = 'copied'): File
+    {
+        $file = $this->insertVideo($name);
+        $this->getManager()->saveState($file, $this->getState($file)->withStatus(StreamStatus::Ready));
+
+        $this->getProvider()->scope = 'production-library';
+        $this->getProvider()->calls = [];
+
+        return $file;
     }
 
     /**

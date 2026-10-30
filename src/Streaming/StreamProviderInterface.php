@@ -16,6 +16,12 @@ interface StreamProviderInterface
     public function getName(): string;
 
     /**
+     * What a video id is unique within (a library, a project): a state from another scope was copied from another
+     * installation and is not this one's to play, fetch or delete.
+     */
+    public function getScope(): string;
+
+    /**
      * The provider fetches `$url` when given, else the file's bytes are uploaded; `$webhookUrl` is empty without
      * webhooks.
      */

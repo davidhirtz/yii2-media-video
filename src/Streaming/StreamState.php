@@ -31,6 +31,7 @@ final readonly class StreamState implements JsonSerializable, Stringable
         public array $data = [],
         ?DateTimeImmutable $submittedAt = null,
         ?DateTimeImmutable $readyAt = null,
+        public ?string $scope = null,
     ) {
         $utc = new DateTimeZone('UTC');
 
@@ -49,7 +50,12 @@ final readonly class StreamState implements JsonSerializable, Stringable
             ? $this->readyAt ?? new DateTimeImmutable()
             : null;
 
-        return new self($this->provider, $this->id, $status, $error, $this->data, $this->submittedAt, $readyAt);
+        return new self($this->provider, $this->id, $status, $error, $this->data, $this->submittedAt, $readyAt, $this->scope);
+    }
+
+    public function withScope(string $scope): self
+    {
+        return new self($this->provider, $this->id, $this->status, $this->error, $this->data, $this->submittedAt, $this->readyAt, $scope);
     }
 
     public function isReady(): bool
@@ -64,6 +70,7 @@ final readonly class StreamState implements JsonSerializable, Stringable
     {
         return array_filter([
             'provider' => $this->provider,
+            'scope' => $this->scope,
             'id' => $this->id,
             'status' => $this->status->value,
             'error' => $this->error,
@@ -95,6 +102,7 @@ final readonly class StreamState implements JsonSerializable, Stringable
         }
 
         $provider = $values['provider'] ?? null;
+        $scope = $values['scope'] ?? null;
         $id = $values['id'] ?? null;
         $status = is_string($values['status'] ?? null) ? StreamStatus::tryFrom($values['status']) : null;
         $error = $values['error'] ?? null;
@@ -103,6 +111,7 @@ final readonly class StreamState implements JsonSerializable, Stringable
         if (
             !is_string($provider)
             || $provider === ''
+            || ($scope !== null && !is_string($scope))
             || ($id !== null && (!is_string($id) || $id === ''))
             || $status === null
             || ($error !== null && !is_string($error))
@@ -119,7 +128,7 @@ final readonly class StreamState implements JsonSerializable, Stringable
         }
 
         /** @var array<string, mixed> $data */
-        return new self($provider, $id, $status, $error, $data, $submittedAt, $readyAt);
+        return new self($provider, $id, $status, $error, $data, $submittedAt, $readyAt, $scope);
     }
 
     private static function parseDate(mixed $value): ?DateTimeImmutable

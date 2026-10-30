@@ -21,13 +21,16 @@ class StreamStateTest extends TestCase
             'Ошибка 🎬 Mu' . "\u{308}" . 'ller',
             ['library' => 42, 'title' => '動画'],
             new DateTimeImmutable('2026-10-30 08:15:00+02:00'),
+            scope: '794367',
         );
 
         $array = $state->toArray();
         $copy = StreamState::fromArray(json_decode(json_encode($array, JSON_THROW_ON_ERROR), true));
 
         self::assertSame('2026-10-30T06:15:00+00:00', $array['submittedAt']);
-        self::assertSame($array, $copy?->toArray());
+        self::assertNotNull($copy);
+        self::assertSame($array, $copy->toArray());
+        self::assertSame('794367', $copy->withStatus(StreamStatus::Ready)->scope);
         self::assertSame($array, json_decode(json_encode($state, JSON_THROW_ON_ERROR), true));
     }
 

@@ -18,6 +18,7 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\console\Controller;
 use yii\console\ExitCode;
+use yii\db\Expression;
 use yii\helpers\Console;
 
 /**
@@ -29,7 +30,7 @@ class VideoStreamController extends Controller
     use UserIdentityTrait;
 
     /**
-     * @var bool whether to submit every video without a stream, not only those left pending
+     * @var bool whether to submit every video without a stream of this installation, a copied installation's too, not only those left pending
      */
     public bool $all = false;
 
@@ -194,6 +195,11 @@ class VideoStreamController extends Controller
             ...$params,
         ], 'Saved ' . implode(', ', array_keys($params)) . " to $this->config");
 
+        // A new scope holds no video yet, so every stream stored is another installation's: a copied database.
+        if ($count = $this->countVideosWithStream()) {
+            $this->stdout("$count videos were streamed by another installation, run `video-stream/submit --all` to stream them here" . PHP_EOL);
+        }
+
         return ExitCode::OK;
     }
 
@@ -209,6 +215,23 @@ class VideoStreamController extends Controller
             return true;
         }
 
-        return $state ? $state->id === null && $state->status === StreamStatus::Pending : $this->all;
+        if ($state === null || StreamManager::getComponent()->isForeignState($state)) {
+            return $this->all;
+        }
+
+        return $state->id === null && $state->status === StreamStatus::Pending;
+    }
+
+    /**
+     * Read off the column, since the `stream` attribute is not wired before the setup.
+     */
+    protected function countVideosWithStream(): int
+    {
+        $column = File::instance()->getCustomAttributesColumn();
+        $path = '$.' . StreamManager::ATTRIBUTE;
+
+        return (int)$this->findVideos()
+            ->andWhere(new Expression("JSON_CONTAINS_PATH([[$column]], 'one', '$path')"))
+            ->count();
     }
 }

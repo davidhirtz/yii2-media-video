@@ -69,7 +69,8 @@ class StreamManager extends Component
 
         $this->deleteRemote($file);
 
-        $state = new StreamState($this->getProvider()->getName(), null);
+        $provider = $this->getProvider();
+        $state = new StreamState($provider->getName(), null, scope: $provider->getScope());
         $this->saveState($file, $state);
 
         return $state;
@@ -91,6 +92,8 @@ class StreamManager extends Component
             Yii::error($exception, __METHOD__);
             $state = StreamState::failed($provider->getName(), $exception->getMessage());
         }
+
+        $state = $state->withScope($provider->getScope());
 
         $this->saveState($file, $state);
 
@@ -213,10 +216,19 @@ class StreamManager extends Component
     }
 
     /**
-     * A state another provider wrote is not this one's to fetch or delete.
+     * Written by another provider or in another scope: a database copied from stage to production, for instance.
+     */
+    public function isForeignState(StreamState $state): bool
+    {
+        $provider = $this->getProvider();
+        return $state->provider !== $provider->getName() || $state->scope !== $provider->getScope();
+    }
+
+    /**
+     * A foreign state is not this installation's to fetch, delete or play.
      */
     protected function isOwnState(StreamState $state): bool
     {
-        return $state->id !== null && $state->provider === $this->getProvider()->getName();
+        return $state->id !== null && !$this->isForeignState($state);
     }
 }

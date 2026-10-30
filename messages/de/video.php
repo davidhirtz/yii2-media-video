@@ -12,6 +12,7 @@ return [
     'FILE_STREAM_RESUBMIT_CONFIRM' => 'Das Video erneut an den Streaming-Anbieter senden?',
     'FILE_STREAM_RESUBMIT_SUCCESS' => 'Das Video wurde an den Streaming-Anbieter gesendet.',
     'FILE_STREAM_STATUS_FAILED_LABEL' => 'Fehlgeschlagen',
+    'FILE_STREAM_STATUS_FOREIGN_LABEL' => 'Für eine andere Installation erstellt',
     'FILE_STREAM_STATUS_PENDING_LABEL' => 'Wartet',
     'FILE_STREAM_STATUS_PROCESSING_LABEL' => 'Wird verarbeitet',
     'FILE_STREAM_STATUS_READY_LABEL' => 'Bereit',

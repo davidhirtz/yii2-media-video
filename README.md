@@ -119,6 +119,12 @@ component from its params:
   an installation already set up is replaced only after an interactive confirmation. All need `urlManager.hostInfo`.
 - A provider implementing `ProvisionableStreamProviderInterface` that is not provisioned yet wires only
   `video-stream/setup` (`StreamManager::isSetUp()`); every other command refuses to run.
+- A state remembers the provider's scope (`StreamProviderInterface::getScope()`, a Bunny library). A database copied to
+  another installation, stage to production for instance, keeps the other library's states: they are neither played,
+  fetched nor deleted, the admin shows them as streamed by another installation, the local file plays meanwhile, and
+  `video-stream/submit --all` streams them again in this installation's scope (`setup` says so when it finds any). A
+  provider cannot copy videos between scopes, so the local files must still exist: never delete the originals on an
+  installation that is copied.
 - The admin plays the stream in the file preview, uses the provider's poster as the grid thumbnail of a video without
   a preview, and offers "Resubmit stream" in the file's action menu.
 - `Test\FakeStreamProvider` records every call and answers configurable states, for tests and a local admin.

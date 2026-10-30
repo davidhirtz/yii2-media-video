@@ -12,6 +12,7 @@ return [
     'FILE_STREAM_RESUBMIT_CONFIRM' => 'Submit the video to the streaming provider again?',
     'FILE_STREAM_RESUBMIT_SUCCESS' => 'The video was submitted to the streaming provider.',
     'FILE_STREAM_STATUS_FAILED_LABEL' => 'Failed',
+    'FILE_STREAM_STATUS_FOREIGN_LABEL' => 'Streamed by another installation',
     'FILE_STREAM_STATUS_PENDING_LABEL' => 'Pending',
     'FILE_STREAM_STATUS_PROCESSING_LABEL' => 'Processing',
     'FILE_STREAM_STATUS_READY_LABEL' => 'Ready',
