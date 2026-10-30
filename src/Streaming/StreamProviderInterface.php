@@ -23,7 +23,7 @@ interface StreamProviderInterface
 
     /**
      * The provider fetches `$url` when given, else the file's bytes are uploaded; `$webhookUrl` is empty without
-     * webhooks.
+     * webhooks. A provider refusing for now (a rate limit) answers `pending` without an id, left for the next submit.
      */
     public function submit(File $file, ?string $url, string $webhookUrl): StreamState;
 

@@ -86,6 +86,7 @@ class StreamingTest extends TestCase
 
         self::assertFalse($controller->beforeAction(new InlineAction('submit', $controller, 'actionSubmit')));
         self::assertTrue($controller->beforeAction(new InlineAction('setup', $controller, 'actionSetup')));
+        self::assertTrue($controller->beforeAction(new InlineAction('index', $controller, 'actionIndex')));
     }
 
     public function testAnUploadedVideoIsSubmittedByUrl(): void
@@ -191,6 +192,40 @@ class StreamingTest extends TestCase
         self::assertCount(1, $this->getProvider()->getCalls('delete'));
     }
 
+    public function testABusyProviderStopsTheRunAndLeavesTheVideoPending(): void
+    {
+        $first = $this->insertVideo('first');
+        $second = $this->insertVideo('second');
+        $this->getManager()->saveState($first, null);
+        $this->getManager()->saveState($second, null);
+        $this->getProvider()->calls = [];
+        $this->getProvider()->submitStatus = StreamStatus::Pending;
+
+        $controller = $this->createController();
+        $controller->all = true;
+
+        self::assertSame(ExitCode::TEMPFAIL, $controller->actionSubmit());
+        self::assertCount(1, $this->getProvider()->getCalls('submit'), 'Every further submit would be refused as well.');
+
+        $pending = array_values(array_filter(
+            [$this->findState($first), $this->findState($second)],
+            static fn (?StreamState $state): bool => $state !== null,
+        ));
+
+        self::assertCount(1, $pending);
+        $state = $pending[0] ?? self::fail('No video was left pending.');
+
+        self::assertSame(StreamStatus::Pending, $state->status);
+        self::assertNull($state->id);
+
+        $this->getProvider()->submitStatus = StreamStatus::Processing;
+        self::assertSame(ExitCode::OK, $controller->actionSubmit());
+
+        self::assertCount(3, $this->getProvider()->getCalls('submit'));
+        self::assertSame(StreamStatus::Processing, $this->findState($first)?->status);
+        self::assertSame(StreamStatus::Processing, $this->findState($second)?->status);
+    }
+
     public function testTheConsoleRefreshesOnlyStreamsInProgress(): void
     {
         $processing = $this->insertVideo('processing');
@@ -234,6 +269,31 @@ class StreamingTest extends TestCase
         self::assertSame([['provision', 'account-key', 'Grüße 🎬', 'https://www.test.localhost/video-stream/webhook']], $this->getProvider()->getCalls('provision'));
         self::assertSame(['cookieValidationKey' => 'Grüße 🎬', 'fakeApiKey' => 'key', 'fakeLibraryId' => '1'], require Yii::getAlias($config));
         self::assertSame('1', Yii::$app->params['fakeLibraryId']);
+    }
+
+    public function testTheSetupCommandReadsTheAccountKeyFromTheEnvironmentOrAsksForIt(): void
+    {
+        $this->getProvider()->provisioned = false;
+
+        $controller = $this->createController();
+        $controller->config = $this->createParamsFile([]);
+        $controller->secret = 'Schlüssel-🔑';
+
+        self::assertSame(ExitCode::OK, $controller->actionSetup());
+        self::assertSame('Schlüssel-🔑', $this->getProvider()->getCalls('provision')[0][1] ?? null);
+
+        putenv('VIDEO_STREAM_ACCOUNT_KEY=environment-key');
+
+        try {
+            $controller = $this->createController();
+            $controller->config = $this->createParamsFile([]);
+            $controller->interactive = false;
+
+            self::assertSame(ExitCode::OK, $controller->actionSetup());
+            self::assertSame('environment-key', $this->getProvider()->getCalls('provision')[1][1] ?? null);
+        } finally {
+            putenv('VIDEO_STREAM_ACCOUNT_KEY');
+        }
     }
 
     public function testTheSetupCommandNeverReplacesAScopeUnattended(): void
@@ -507,6 +567,11 @@ class StreamingTest extends TestCase
         }
     }
 
+    private function findState(File $file): ?StreamState
+    {
+        return $this->getManager()->getState(File::findOne($file->id) ?? self::fail('The file is gone.'));
+    }
+
     private function getState(?File $file): StreamState
     {
         return $this->getManager()->getState($file ?? self::fail('No file')) ?? self::fail('No stream state');
@@ -534,4 +599,13 @@ class StreamingTest extends TestCase
 class TestVideoStreamController extends VideoStreamController
 {
     use StdOutBufferControllerTrait;
+
+    public ?string $secret = null;
+
+    #[Override]
+    protected function promptSecret(string $label): ?string
+    {
+        $this->stdout("$label ");
+        return $this->secret;
+    }
 }

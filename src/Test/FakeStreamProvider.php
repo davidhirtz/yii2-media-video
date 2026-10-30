@@ -48,7 +48,7 @@ class FakeStreamProvider extends BaseObject implements ProvisionableStreamProvid
     {
         $this->calls[] = ['submit', $file->id, $url, $webhookUrl];
 
-        $id = 'fake-' . bin2hex(random_bytes(8));
+        $id = $this->submitStatus === StreamStatus::Pending ? null : 'fake-' . bin2hex(random_bytes(8));
         $error = $this->submitStatus === StreamStatus::Failed ? ($this->error ?? 'Submit failed') : null;
 
         return new StreamState($this->name, $id, $this->submitStatus, $error, ['title' => $file->getFilename()]);

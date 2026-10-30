@@ -40,7 +40,7 @@ class VideoStreamController extends Controller
     public ?int $fileId = null;
 
     /**
-     * @var string|null the provider account's key, used once and never stored
+     * @var string|null the provider account's key, used once and never stored; `VIDEO_STREAM_ACCOUNT_KEY` or asked for when omitted, which keeps it out of the shell history
      */
     public ?string $accountKey = null;
 
@@ -69,12 +69,23 @@ class VideoStreamController extends Controller
     #[Override]
     public function beforeAction($action): bool
     {
-        if ($action->id !== 'setup' && !StreamManager::getComponent()->isSetUp()) {
+        if (!in_array($action->id, ['index', 'setup'], true) && !StreamManager::getComponent()->isSetUp()) {
             $this->stderr('Streaming is not set up yet, run `video-stream/setup` first' . PHP_EOL, Console::FG_RED);
             return false;
         }
 
         return parent::beforeAction($action) && $this->setUserIdentity();
+    }
+
+    /**
+     * Lists the commands.
+     *
+     * @noinspection PhpUnused
+     */
+    public function actionIndex(): int
+    {
+        $exitCode = Yii::$app->runAction('help/index', [$this->id]);
+        return is_int($exitCode) ? $exitCode : ExitCode::OK;
     }
 
     /**
@@ -95,6 +106,14 @@ class VideoStreamController extends Controller
             }
 
             $state = $manager->submit($file);
+
+            // Every further submit would be refused as well; the video waits as `pending` for the next run.
+            if ($state->id === null && $state->status === StreamStatus::Pending) {
+                $this->stdout("$count videos were submitted" . PHP_EOL, Console::FG_GREEN);
+                $this->stderr('The provider is busy' . ($state->error !== null ? " ($state->error)" : '') . ', run `video-stream/submit` again later for the rest' . PHP_EOL, Console::FG_YELLOW);
+                return ExitCode::TEMPFAIL;
+            }
+
             $state->status === StreamStatus::Failed ? $failed++ : $count++;
 
             if ($state->error !== null) {
@@ -171,16 +190,22 @@ class VideoStreamController extends Controller
             return ExitCode::UNAVAILABLE;
         }
 
-        if (!$this->accountKey) {
-            $this->stderr('The provider account key is missing (`--account-key`)' . PHP_EOL, Console::FG_RED);
-            return ExitCode::USAGE;
-        }
-
         // A second run would create a second scope and orphan the first, so it is never unattended.
         if ($provider->isProvisioned() && !($this->interactive
                 && $this->confirm("This installation is already set up at \"{$provider->getName()}\". Create a new scope and replace its params?", false))) {
             $this->stdout('This installation is already set up' . PHP_EOL);
             return ExitCode::OK;
+        }
+
+        $this->accountKey = $this->accountKey ?: (getenv('VIDEO_STREAM_ACCOUNT_KEY') ?: null);
+
+        if (!$this->accountKey && $this->interactive) {
+            $this->accountKey = $this->promptSecret('The provider account key:');
+        }
+
+        if (!$this->accountKey) {
+            $this->stderr('The provider account key is missing (`--account-key` or `VIDEO_STREAM_ACCOUNT_KEY`)' . PHP_EOL, Console::FG_RED);
+            return ExitCode::USAGE;
         }
 
         try {
@@ -201,6 +226,28 @@ class VideoStreamController extends Controller
         }
 
         return ExitCode::OK;
+    }
+
+    /**
+     * Without echo on a terminal, so the key is neither on screen nor in a scrollback.
+     */
+    protected function promptSecret(string $label): ?string
+    {
+        $isTerminal = stream_isatty(STDIN);
+        $this->stdout("$label ");
+
+        if ($isTerminal) {
+            shell_exec('stty -echo');
+        }
+
+        $value = fgets(STDIN);
+
+        if ($isTerminal) {
+            shell_exec('stty echo');
+            $this->stdout(PHP_EOL);
+        }
+
+        return is_string($value) && trim($value) !== '' ? trim($value) : null;
     }
 
     protected function findVideos(): FileQuery

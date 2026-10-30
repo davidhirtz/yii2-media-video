@@ -111,12 +111,14 @@ component from its params:
   video; a duplicate gets a remote video of its own. A failing provider fails the stream, never the upload.
 - The provider calls `POST /video-stream/webhook` (no CSRF, no session, always `204`); the payload only names the
   video, whose state is then fetched from the provider.
-- Console: `video-stream/submit` uploads the videos left pending (`--all` adds every video without a stream,
+- Console (`./yii video-stream` lists the commands): `video-stream/submit` uploads the videos left pending (`--all` adds every video without a stream,
   `--file-id` resubmits one), `video-stream/refresh` fetches the state of every video still pending or processing (for
   an installation no webhook reaches), `video-stream/webhook` registers the webhook URL with the provider, and
-  `video-stream/setup --account-key=…` creates the installation's own scope at a provider implementing
+  `video-stream/setup` (the account key from `--account-key`, `VIDEO_STREAM_ACCOUNT_KEY` or a hidden prompt) creates the installation's own scope at a provider implementing
   `ProvisionableStreamProviderInterface` and saves its params to `config/params.php` (`--config` for another file);
   an installation already set up is replaced only after an interactive confirmation. All need `urlManager.hostInfo`.
+- A provider refusing for now (a rate limit) answers `pending` without an id: `video-stream/submit` stops there with
+  exit code 75 (`TEMPFAIL`) and the next run continues with the videos left.
 - A provider implementing `ProvisionableStreamProviderInterface` that is not provisioned yet wires only
   `video-stream/setup` (`StreamManager::isSetUp()`); every other command refuses to run.
 - A state remembers the provider's scope (`StreamProviderInterface::getScope()`, a Bunny library). A database copied to

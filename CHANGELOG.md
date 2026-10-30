@@ -2,7 +2,7 @@
 
 - Added adaptive video through a streaming provider: the `videoStream` component (`Streaming\StreamManager`), `StreamProviderInterface` and `ProvisionableStreamProviderInterface`
 - Added the `stream` attribute of video files (`StreamCustomAttribute`, `StreamState`, `StreamStatus`)
-- Added the provider webhook `video-stream/webhook` and the commands `video-stream/submit`, `refresh`, `webhook` and `setup`
+- Added the provider webhook `video-stream/webhook` and the commands `video-stream/submit`, `refresh`, `webhook` and `setup` (account key from `VIDEO_STREAM_ACCOUNT_KEY` or a hidden prompt)
 - Added HLS playback to `Widgets\Media` and the admin preview (`HlsAssetBundle`, hls.js)
 - Added the "Resubmit stream" action to the file page (`FileActionDropdown`)
 - Added `Test\FakeStreamProvider`
