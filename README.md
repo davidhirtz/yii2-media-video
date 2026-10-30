@@ -134,7 +134,8 @@ component from its params:
   provider cannot copy videos between scopes, so the local files must still exist: never delete the originals on an
   installation that is copied.
 - The admin plays the stream in the file preview, uses the provider's poster as the grid thumbnail of a video without
-  a preview, and offers "Resubmit stream" in the file's action menu.
+  a preview, and offers "Resubmit stream" in the file's action menu for a stream that is not playable (failed, pending,
+  processing or another installation's): a playable one would play the local file until the new one is ready.
 - `Test\FakeStreamProvider` records every call and answers configurable states, for tests and a local admin.
 
 `Widgets\Media` writes the playlist to `src` (or `data-src`) with a `data-hls` attribute and the provider's poster

@@ -167,6 +167,23 @@ class StreamRenderingTest extends TestCase
         self::assertSame([['delete', $old]], $this->getProvider()->getCalls('delete'));
     }
 
+    public function testAPlayableStreamOffersNoResubmit(): void
+    {
+        $file = $this->insertReadyVideo();
+
+        $user = $this->getUserFromFixture('admin');
+        $this->assignAdminRole($user->id);
+        $this->getWebUser()->login($user);
+
+        $this->open("/admin/media/file/update?id=$file->id");
+        self::assertAnySelectorTextNotContains('.dropdown-item .btn', 'Resubmit stream');
+
+        $this->postResubmit($file);
+
+        self::assertResponseStatusCodeSame(404);
+        self::assertSame([], $this->getProvider()->getCalls('delete'));
+    }
+
     public function testTheResubmitNeedsThePermission(): void
     {
         $file = $this->insertVideo();

@@ -47,12 +47,13 @@ class StreamController extends Controller
     public function actionResubmit(int $id): Response
     {
         $file = File::findOne($id);
+        $manager = StreamManager::getComponent();
 
-        if (!$file?->isVideo()) {
+        if (!$file || !$manager->canResubmit($file)) {
             throw new NotFoundHttpException();
         }
 
-        $state = StreamManager::getComponent()->schedule($file);
+        $state = $manager->schedule($file);
 
         if ($state->error !== null) {
             $this->error($state->error);

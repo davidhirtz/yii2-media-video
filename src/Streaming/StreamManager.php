@@ -195,6 +195,14 @@ class StreamManager extends Component
         return is_string($value) ? StreamState::fromArray(json_decode($value, true)) : null;
     }
 
+    /**
+     * Not a playable stream: its remote video is deleted first, so the local file would play until the new one is ready.
+     */
+    public function canResubmit(File $file): bool
+    {
+        return $file->isVideo() && !$this->isPlayable($file);
+    }
+
     public function isPlayable(File $file): bool
     {
         $state = $this->getState($file);
