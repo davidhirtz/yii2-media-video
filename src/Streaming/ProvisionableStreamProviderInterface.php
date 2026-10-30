@@ -13,4 +13,6 @@ interface ProvisionableStreamProviderInterface extends StreamProviderInterface
      * @return array<string, string>
      */
     public function provision(string $accountKey, string $name, string $webhookUrl): array;
+
+    public function isProvisioned(): bool;
 }

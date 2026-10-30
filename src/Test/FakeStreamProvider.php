@@ -29,6 +29,7 @@ class FakeStreamProvider extends BaseObject implements ProvisionableStreamProvid
      * `{id}` is replaced.
      */
     public ?string $playlistUrl = null;
+    public bool $provisioned = false;
 
     /**
      * @var list<list<mixed>>
@@ -94,6 +95,12 @@ class FakeStreamProvider extends BaseObject implements ProvisionableStreamProvid
     public function getContentSecurityPolicy(): array
     {
         return [$this->host];
+    }
+
+    #[Override]
+    public function isProvisioned(): bool
+    {
+        return $this->provisioned;
     }
 
     #[Override]

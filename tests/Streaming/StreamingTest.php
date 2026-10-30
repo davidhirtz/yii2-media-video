@@ -15,6 +15,7 @@ use Hirtz\Media\Video\Streaming\StreamState;
 use Hirtz\Media\Video\Streaming\StreamStatus;
 use Hirtz\Media\Video\Test\FakeStreamProvider;
 use Hirtz\Skeleton\Console\Application as ConsoleApplication;
+use Hirtz\Skeleton\Helpers\ConfigFile;
 use Hirtz\Skeleton\Helpers\FileHelper;
 use Hirtz\Skeleton\Mcp\Mcp;
 use Hirtz\Skeleton\Mcp\Resource;
@@ -31,6 +32,8 @@ class StreamingTest extends TestCase
 {
     use MediaFileTrait;
     use UserFixtureTrait;
+
+    private const string PARAMS_DIRECTORY = '@runtime/video-stream-config';
 
     #[Override]
     protected function setUp(): void
@@ -50,6 +53,7 @@ class StreamingTest extends TestCase
     protected function tearDown(): void
     {
         FileHelper::removeDirectory((string)File::getModule()->uploadPath);
+        FileHelper::removeDirectory(Yii::getAlias(self::PARAMS_DIRECTORY));
         parent::tearDown();
     }
 
@@ -195,9 +199,12 @@ class StreamingTest extends TestCase
         self::assertSame(ExitCode::CONFIG, $controller->actionWebhook());
     }
 
-    public function testTheSetupCommandPrintsTheParams(): void
+    public function testTheSetupCommandSavesTheParams(): void
     {
+        $config = $this->createParamsFile(['cookieValidationKey' => 'Grüße 🎬']);
+
         $controller = $this->createController();
+        $controller->config = $config;
         self::assertSame(ExitCode::USAGE, $controller->actionSetup());
 
         $controller->accountKey = 'account-key';
@@ -205,7 +212,34 @@ class StreamingTest extends TestCase
 
         self::assertSame(ExitCode::OK, $controller->actionSetup());
         self::assertSame([['provision', 'account-key', 'Grüße 🎬', 'https://www.test.localhost/video-stream/webhook']], $this->getProvider()->getCalls('provision'));
-        self::assertStringContainsString("'fakeLibraryId' => '1',", $controller->flushStdOutBuffer());
+        self::assertSame(['cookieValidationKey' => 'Grüße 🎬', 'fakeApiKey' => 'key', 'fakeLibraryId' => '1'], require Yii::getAlias($config));
+        self::assertSame('1', Yii::$app->params['fakeLibraryId']);
+    }
+
+    public function testTheSetupCommandNeverReplacesAScopeUnattended(): void
+    {
+        $config = $this->createParamsFile(['fakeLibraryId' => '7']);
+        $this->getProvider()->provisioned = true;
+
+        $controller = $this->createController();
+        $controller->config = $config;
+        $controller->accountKey = 'account-key';
+        $controller->interactive = false;
+
+        self::assertSame(ExitCode::OK, $controller->actionSetup());
+        self::assertSame([], $this->getProvider()->getCalls('provision'));
+        self::assertSame(['fakeLibraryId' => '7'], require Yii::getAlias($config));
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    private function createParamsFile(array $params): string
+    {
+        $file = self::PARAMS_DIRECTORY . '/params.php';
+        self::assertTrue(ConfigFile::write($file, $params));
+
+        return $file;
     }
 
     public function testTheConsoleControllerIsRegistered(): void

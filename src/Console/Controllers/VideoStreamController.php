@@ -10,6 +10,7 @@ use Hirtz\Media\Video\Streaming\ProvisionableStreamProviderInterface;
 use Hirtz\Media\Video\Streaming\StreamManager;
 use Hirtz\Media\Video\Streaming\StreamState;
 use Hirtz\Media\Video\Streaming\StreamStatus;
+use Hirtz\Skeleton\Console\Controllers\Traits\ConfigTrait;
 use Hirtz\Skeleton\Console\Controllers\Traits\UserIdentityTrait;
 use Override;
 use Yii;
@@ -23,6 +24,7 @@ use yii\helpers\Console;
  */
 class VideoStreamController extends Controller
 {
+    use ConfigTrait;
     use UserIdentityTrait;
 
     /**
@@ -45,6 +47,11 @@ class VideoStreamController extends Controller
      */
     public ?string $name = null;
 
+    /**
+     * @var string the params file `setup` writes to
+     */
+    public string $config = '@root/config/params.php';
+
     #[Override]
     public function options($actionID): array
     {
@@ -52,7 +59,7 @@ class VideoStreamController extends Controller
 
         return match ($actionID) {
             'submit' => [...$options, 'all', 'fileId'],
-            'setup' => [...$options, 'accountKey', 'name'],
+            'setup' => [...$options, 'accountKey', 'name', 'config'],
             default => $options,
         };
     }
@@ -143,7 +150,7 @@ class VideoStreamController extends Controller
     }
 
     /**
-     * Creates this installation's scope at the provider and prints the params for `config/params.php`.
+     * Creates this installation's scope at the provider and saves its params to `config/params.php`.
      *
      * @noinspection PhpUnused
      */
@@ -162,11 +169,19 @@ class VideoStreamController extends Controller
             return ExitCode::USAGE;
         }
 
+        // A second run would create a second scope and orphan the first, so it is never unattended.
+        if ($provider->isProvisioned() && !($this->interactive
+                && $this->confirm("This installation is already set up at \"{$provider->getName()}\". Create a new scope and replace its params?", false))) {
+            $this->stdout('This installation is already set up' . PHP_EOL);
+            return ExitCode::OK;
+        }
+
         $params = $provider->provision($this->accountKey, $this->name ?? Yii::$app->name, $manager->getWebhookUrl());
 
-        foreach ($params as $name => $value) {
-            $this->stdout("'$name' => '$value'," . PHP_EOL);
-        }
+        $this->setConfig($this->config, [
+            ...$this->getConfig($this->config),
+            ...$params,
+        ], 'Saved ' . implode(', ', array_keys($params)) . " to $this->config");
 
         return ExitCode::OK;
     }
