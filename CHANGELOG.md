@@ -1,3 +1,7 @@
+## Unreleased
+
+- Added `Widgets\StructuredData\VideoObject`, a video node filled from a file and its stream's poster
+
 ## 3.7.0 (October 31, 2026)
 
 - Added adaptive video through a streaming provider (`videoStream`, `StreamProviderInterface`, `ProvisionableStreamProviderInterface`, `ListableStreamProviderInterface`, the `stream` attribute, `video-stream/*`, the `video-stream/webhook` endpoint, `HlsAssetBundle`)
