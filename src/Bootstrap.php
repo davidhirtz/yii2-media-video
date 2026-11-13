@@ -87,6 +87,7 @@ class Bootstrap implements ConfigBootstrapInterface
     /**
      * @param Application<\Hirtz\Skeleton\Models\User>|ConsoleApplication $app
      */
+    #[Override]
     public function bootstrap($app): void
     {
         Yii::setAlias('@media-video', __DIR__);
