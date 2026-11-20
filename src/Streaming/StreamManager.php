@@ -30,6 +30,12 @@ class StreamManager extends Component
 
     public bool $webhookEnabled = true;
 
+    /**
+     * How long a submitted stream is left to finish before it may be submitted again: each resubmit deletes the video
+     * being encoded and pays for another encode.
+     */
+    public int $resubmitDelay = 600;
+
     private ?StreamProviderInterface $resolvedProvider = null;
 
     public static function getComponent(): self
@@ -200,7 +206,16 @@ class StreamManager extends Component
      */
     public function canResubmit(File $file): bool
     {
-        return $file->isVideo() && !$this->isPlayable($file);
+        if (!$file->isVideo() || $this->isPlayable($file)) {
+            return false;
+        }
+
+        $state = $this->getState($file);
+
+        return $state === null
+            || $state->id === null
+            || !$state->status->isInProgress()
+            || $state->submittedAt->getTimestamp() <= time() - $this->resubmitDelay;
     }
 
     public function isPlayable(File $file): bool

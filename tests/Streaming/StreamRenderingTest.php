@@ -37,6 +37,8 @@ class StreamRenderingTest extends TestCase
 
         $this->config['components']['videoStream'] = [
             'class' => StreamManager::class,
+            // The tests submit and resubmit within a second
+            'resubmitDelay' => 0,
             'provider' => ['class' => FakeStreamProvider::class],
         ];
 
@@ -166,6 +168,23 @@ class StreamRenderingTest extends TestCase
         self::assertCurrentUrlEquals("https://www.test.localhost/admin/media/file/update?id=$file->id");
         self::assertAlertSame('The video was submitted to the streaming provider.', 'success');
         self::assertSame([['delete', $old]], $this->getProvider()->getCalls('delete'));
+    }
+
+    public function testAStreamJustSubmittedIsNotResubmitted(): void
+    {
+        $this->config['components']['videoStream']['resubmitDelay'] = 600;
+        $this->reloadApplication();
+
+        $file = $this->insertVideo();
+        $this->loginAdmin();
+
+        $this->open("/admin/media/file/update?id=$file->id");
+        self::assertAnySelectorTextNotContains('.dropdown-item .btn', 'Resubmit stream');
+
+        $this->postResubmit($file);
+
+        self::assertResponseStatusCodeSame(404);
+        self::assertSame([], $this->getProvider()->getCalls('delete'));
     }
 
     public function testTheFileGridShowsTheStreamStatus(): void

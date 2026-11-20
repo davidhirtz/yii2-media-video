@@ -1,3 +1,7 @@
+## Unreleased
+
+- Added `StreamManager::$resubmitDelay`
+
 ## 3.8.0 (November 11, 2026)
 
 - Added `Widgets\StructuredData\VideoObject`, a video node filled from a file and its stream's poster
