@@ -1,4 +1,4 @@
-## Unreleased
+## 3.9.0 (November 21, 2026)
 
 - Added `StreamManager::$resubmitDelay`
 
